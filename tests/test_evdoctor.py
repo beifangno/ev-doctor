@@ -260,7 +260,7 @@ class _Fake(BaseHTTPRequestHandler):
         if img and "JSON" in body["messages"][0]["content"][0]["text"]:
             content = '```json\n{"description":"绝缘灯亮","dtc":["P0AA6","XYZ"],"measurements":{"insulation_kohm":"30","nope":1}}\n```'
         else:
-            content = "白" if img else "好"
+            content = "红色" if img else "好"
         self._j(200, {"choices": [{"message": {"content": content}}]})
 
     def log_message(self, *a):

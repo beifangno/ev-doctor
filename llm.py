@@ -157,14 +157,13 @@ def list_models(override=None):
     return ids
 
 
-# 1×1 像素白色 PNG，用来测试模型能不能看图
-_TINY_PNG = ("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4"
-             "//8/AAX+Av4N70a4AAAAAElFTkSuQmCC")
+# 8×8 纯红色 PNG，用来测试模型能不能看图：回答里带"红"才算真的看到了
+_TINY_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAEklEQVR4nGP4z8CAFWEXHbQSACj/P8Fu7N9hAAAAAElFTkSuQmCC"
 
 
 def _probe(cfg, model, image=False):
     t0 = time.perf_counter()
-    content = [{"type": "text", "text": "这张图是什么颜色？只回答一个字。"},
+    content = [{"type": "text", "text": "这张图是什么颜色？只回答颜色。"},
                {"type": "image_url", "image_url": {"url": _TINY_PNG}}] if image else "只回复一个字：好"
     payload = {"model": model, "max_tokens": 10, "temperature": 0,
                "messages": [{"role": "user", "content": content}]}
@@ -180,7 +179,11 @@ def _probe(cfg, model, image=False):
         raise LLMError("接口有响应，但不是 OpenAI 兼容格式（地址是否少了 /v1？）")
     if isinstance(reply, list):
         reply = "".join(x.get("text", "") for x in reply if isinstance(x, dict))
-    return {"model": model, "ms": round((time.perf_counter() - t0) * 1000), "reply": (reply or "").strip()[:30]}
+    reply = (reply or "").strip()
+    if image and not any(w in reply.lower() for w in ("红", "red")):
+        # 有些中转站对部分模型会悄悄丢掉图片，模型回"我没看到图片"——这不算能看图
+        raise LLMError(f"{model} 收不到图片（回答：{reply[:30]}），换一个看图模型")
+    return {"model": model, "ms": round((time.perf_counter() - t0) * 1000), "reply": reply[:30]}
 
 
 def test_connection(override=None):
