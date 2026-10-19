@@ -21,6 +21,13 @@ from diagnoser import DTC_RE, TfidfRanker, char_ngrams
 # 压平之后 Top-1 不变，但模糊描述的置信度会降下来，让追问和数据流有机会发挥作用
 TEXT_TEMPER = 0.6
 
+# 文字描述至少要"像一句故障描述"才拿来算先验：
+#   有中文，或有故障码，或命中了知识库关键词（BMS / DCDC / READY 这类英文缩写也算）；
+#   并且和知识库的最高匹配分不能太低。否则当作"没说清楚"，用均匀先验直接进入追问。
+MIN_TEXT_SIGNAL = 0.15
+# 没有任何依据、首位概率又低于这个值时，不出诊断报告，只追问
+MIN_REPORT_PROB = 0.25
+
 # 已经录入了对应数据流，就不再问同一件事
 QUESTION_COVERED_BY = {
     "Q_LV_VOLT_READY": ["lv_voltage_ready"],
@@ -112,6 +119,18 @@ class _Session:
         self.cases, self.ranker, self.case_vecs = k.cases, k.ranker, k.case_vecs
 
     # ------------------------------------------------------------------ 数据流
+    def _text_has_signal(self, text, items):
+        """描述里有没有能用来判断的内容。"""
+        has_cjk = any("\u4e00" <= ch <= "\u9fff" for ch in text)
+        has_dtc = bool(DTC_RE.search(text))
+        has_kw = any(it["keywords"] for it in items)
+        if not (has_cjk or has_dtc or has_kw):
+            return False            # 纯数字 / 字母 / 符号，比如 "123" "abc" "???"
+        if has_dtc or has_kw:
+            return True
+        top = max(self.ranker.scores(text).values(), key=lambda v: v["score"])["score"]
+        return top >= MIN_TEXT_SIGNAL
+
     def _measurements(self, raw):
         """清洗前端传来的测量值，并计算派生量。"""
         m = {}
@@ -262,9 +281,11 @@ class _Session:
             raise ValueError("请写一句故障描述，或者至少录入一项数据流")
 
         evidence = []
+        text_used = False
         # 1) 文字描述
-        if text:
-            items = self.ranker.explain(text)
+        items = self.ranker.explain(text) if text else []
+        if text and self._text_has_signal(text, items):
+            text_used = True
             prior = {it["id"]: it["prob"] ** TEXT_TEMPER for it in items}
             z = sum(prior.values())
             prior = {k: v / z for k, v in prior.items()}
@@ -283,6 +304,9 @@ class _Session:
                                  "source": None})
         else:
             prior = {fid: 1 / len(self.ids) for fid in self.ids}
+            if text:
+                evidence.append({"kind": "text", "level": "info", "effect": "support",
+                                 "text": "描述里没有识别到故障信息，先按下面的问题逐个确认", "source": None})
 
         # 2) 数据流规则
         hits = self._apply_rules(m)
@@ -306,6 +330,11 @@ class _Session:
 
         nq = self._next_question(post, answers, m)
         conf = "高" if top_p >= 0.75 else "中" if top_p >= 0.45 else "低"
+        # 什么时候可以出报告：
+        #   有数据流命中或故障码 → 可以（这是硬证据，哪怕概率不高也值得给排查方向）
+        #   否则首位概率要过门槛（光靠模糊描述 + 一两个问题不够）
+        has_hard_evidence = bool(hits) or any(e["kind"] == "dtc" and e["level"] == "fault" for e in evidence)
+        need_more = not has_hard_evidence and top_p < MIN_REPORT_PROB
 
         diag_id = db.save_diagnosis(self.conn, text, {k: v for k, v in m.items() if k in self.params},
                                     answers, top_id, round(top_p, 4))
@@ -314,6 +343,8 @@ class _Session:
             "ranker": self.ranker.name,
             "diagnosis_id": diag_id,
             "text": text,
+            "text_used": text_used,
+            "status": "need_more" if need_more else "ok",
             "candidates": [
                 {"id": fid, "name": self.by_id[fid]["name"], "system": self.by_id[fid]["system"],
                  "severity": self.by_id[fid]["severity"], "hv_risk": self.by_id[fid]["hv_risk"], "prob": round(p, 4)}
@@ -324,10 +355,10 @@ class _Session:
             "next_question": nq,
             "suggest_measure": self._suggest_measure(ranked, m),
             "answered": answered,
-            "report": {
+            "report": None if need_more else {
                 "fault_id": top_id, "name": top["name"], "prob": round(top_p, 4), "confidence": conf,
                 "hv_risk": top["hv_risk"], "symptoms": top["symptoms"], "causes": top["causes"],
                 "steps": top["steps"], "safety": top["safety"], "refs": top["refs"],
             },
-            "similar_cases": self.similar_cases(text, top_id),
+            "similar_cases": [] if need_more else self.similar_cases(text if text_used else "", top_id),
         }

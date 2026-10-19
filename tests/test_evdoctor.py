@@ -166,6 +166,24 @@ class TestEngine(TmpDB):
         super().setUp()
         self.e = engine.Engine(self.conn)
 
+    def test_garbage_text_gives_no_report(self):
+        """"123" 这类描述不能靠字符巧合猜出一个故障来。"""
+        for t in ("123", "abc", "？？？", "今天天气不错"):
+            r = self.e.diagnose(text=t)
+            self.assertFalse(r["text_used"], t)
+            self.assertEqual(r["status"], "need_more", t)
+            self.assertIsNone(r["report"], t)
+            self.assertIsNotNone(r["next_question"], t)
+            self.assertLess(r["candidates"][0]["prob"], 0.1, t)   # 均匀先验，没有被某一类抢走
+        # 模糊但有中文的描述：也先追问
+        self.assertEqual(self.e.diagnose(text="车坏了")["status"], "need_more")
+        # 有效描述：正常出报告
+        r = self.e.diagnose(text="充不进电")
+        self.assertTrue(r["text_used"] and r["status"] == "ok" and r["report"])
+        # 垃圾描述 + 数据流：数据流是硬证据，可以出报告
+        r = self.e.diagnose(text="123", measurements={"lv_voltage_off": 12.1, "lv_voltage_ready": 12.3})
+        self.assertEqual((r["status"], r["candidates"][0]["id"]), ("ok", "DCDC_FAULT"))
+
     def test_requires_some_input(self):
         with self.assertRaises(ValueError):
             self.e.diagnose()

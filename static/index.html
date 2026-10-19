@@ -109,6 +109,11 @@ details.measure[open] summary::after{content:"收起"}
 .tag.conf-中{background:#FBEFD9;color:var(--amber)}
 .tag.conf-低{background:#F7E1DF;color:var(--red)}
 
+.need-more{margin:0 0 18px;padding:14px 18px;background:#FBEFD9;border-left:5px solid var(--amber);border-radius:0 8px 8px 0}
+.need-more b{display:block;margin-bottom:2px}
+.need-more p{margin:0;font-size:14px;color:#5A4A2A}
+.cands-dim .cand{opacity:.55}
+.cands-dim .cand-pct{color:var(--muted)}
 .ask{margin:20px 0 6px;padding:16px 18px;border-left:5px solid var(--steel);background:#F4F7FC;border-radius:0 8px 8px 0}
 .ask-q{font-size:17px;font-weight:600;margin:2px 0 12px;line-height:1.5}
 .ask-sub{font-size:13px;color:var(--muted)}
@@ -480,16 +485,26 @@ async function diagnose() {
 }
 
 function render(d) {
-  const c = d.candidates.slice(0, 3), r = d.report;
+  const c = d.candidates.slice(0, 3), r = d.report, more = d.status === "need_more";
   const support = d.evidence.filter(e => e.effect !== "refute"), refute = d.evidence.filter(e => e.effect === "refute");
   $("#panel").innerHTML = `
-    <div class="rank-head"><h2>最可能的故障</h2><div class="speed">用时 <b>${d.ms.toFixed(1)}</b> ms</div></div>
+    ${more ? `
+      <div class="need-more">
+        <b>${d.text && !d.text_used ? (/[\u4e00-\u9fff]/.test(d.text) ? "描述太笼统，先别下结论" : "没看懂这句描述") : "信息还不够，先别下结论"}</b>
+        <p>${d.text && !d.text_used
+            ? (/[\u4e00-\u9fff]/.test(d.text)
+                ? "“" + esc(d.text.length > 20 ? d.text.slice(0, 20) + "…" : d.text) + "” 看不出具体现象。说说仪表亮了什么灯、哪一步卡住了，比如“上不了高压”“充不进电”，或者直接回答下面的问题。"
+                : "“" + esc(d.text.length > 20 ? d.text.slice(0, 20) + "…" : d.text) + "” 里没有故障相关的内容。可以换个说法，比如“上不了高压”“充不进电”“仪表报绝缘故障”，或者直接回答下面的问题。")
+            : "描述比较笼统，各类故障的可能性都差不多。回答下面的问题，或者录入几项数据流，系统才会给出排查方向。"}</p>
+      </div>` : `<div class="rank-head"><h2>最可能的故障</h2><div class="speed">用时 <b>${d.ms.toFixed(1)}</b> ms</div></div>`}
+    ${more ? `<div class="cands-dim">` : ""}
     ${c.map(x => `
       <div class="cand ${x.prob < 0.05 ? "minor" : ""}">
         <div class="cand-name">${esc(x.name)}<em>${esc(x.system)}</em>${x.hv_risk ? `<span class="tag hv">涉及高压</span>` : ""}</div>
         <div class="cand-pct">${pct(x.prob)}<small>%</small></div>
         <div class="bar"><div data-w="${Math.max(x.prob * 100, 0.6)}"></div></div>
       </div>`).join("")}
+    ${more ? `</div>` : ""}
 
     ${d.next_question ? `
       <div class="ask">
@@ -507,6 +522,7 @@ function render(d) {
         <ul>${d.suggest_measure.map(s => `<li><b>${esc(s.name)}</b>　<small>${esc(s.hint)}，用来判断是否「${esc(s.for)}」</small></li>`).join("")}</ul>
       </div>` : ""}
 
+    ${!r ? "" : `
     ${r.hv_risk ? `<div class="hv-band">${HV_ICON}<div><b>排查会接触高压部件。</b>非专业人员请不要自行拆修，交给持证技师按维修手册操作。</div></div>` : ""}
 
     <section class="block">
@@ -550,7 +566,7 @@ function render(d) {
       </div>
       <button class="btn btn-main" id="cf-go">确认并存入案例库</button>
       <span class="hint" id="cf-hint"></span>
-    </div>`;
+    </div>`}`;
   requestAnimationFrame(() => requestAnimationFrame(() =>
     $("#panel").querySelectorAll(".bar > div").forEach(b => b.style.width = b.dataset.w + "%")));
 }
