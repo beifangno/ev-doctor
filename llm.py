@@ -182,9 +182,9 @@ def _probe(cfg, model, image=False):
     reply = (reply or "").strip()
     if image:
         # 有些中转站对部分模型会悄悄丢掉图片，模型会回"我没看到图片"——这不算能看图。
-        # 只要说出了一个颜色（红/橙都接受，小图经压缩色偏常见），就认为图片真的送到了。
+        # 必须答出"红"才算看到了。放宽到"橙"会被瞎猜的模型骗过（实测 gpt-6-astra 没收到图也答"浅橙色"）。
         low = reply.lower()
-        saw_color = any(w in low for w in ("红", "橙", "red", "orange", "crimson", "scarlet"))
+        saw_color = any(w in low for w in ("红", "red", "crimson", "scarlet"))
         said_no_image = any(w in reply for w in ("没有看到", "看不到", "没看到", "未看到", "无法看到", "请上传", "重新上传")) \
             or any(w in low for w in ("no image", "don't see", "cannot see", "can't see", "not see"))
         if said_no_image or not saw_color:
