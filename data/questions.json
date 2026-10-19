@@ -1,0 +1,2348 @@
+[
+  {
+    "id": "Q_DASH_ON",
+    "text": "按下启动键时，仪表和中控屏能正常点亮、遥控钥匙解锁有反应吗？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "能正常点亮，钥匙有反应"
+      },
+      {
+        "key": "no",
+        "label": "仪表不亮/闪烁，或钥匙没反应"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.95,
+        "no": 0.05
+      },
+      "INSULATION_LOW": {
+        "yes": 0.95,
+        "no": 0.05
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.93,
+        "no": 0.07
+      },
+      "RELAY_WELD": {
+        "yes": 0.95,
+        "no": 0.05
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.85,
+        "no": 0.15
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "DCDC_FAULT": {
+        "yes": 0.6,
+        "no": 0.4
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.96,
+        "no": 0.04
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.95,
+        "no": 0.05
+      },
+      "SOC_DRIFT": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.97,
+        "no": 0.03
+      },
+      "EAC_FAULT": {
+        "yes": 0.97,
+        "no": 0.03
+      }
+    }
+  },
+  {
+    "id": "Q_READY",
+    "text": "车辆现在能否点亮 READY（进入可行驶状态）？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "能正常 READY"
+      },
+      {
+        "key": "flash",
+        "label": "READY 闪一下就灭，或要多试几次才行"
+      },
+      {
+        "key": "no",
+        "label": "完全无法 READY"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.15,
+        "flash": 0.07,
+        "no": 0.78
+      },
+      "INSULATION_LOW": {
+        "yes": 0.35,
+        "flash": 0.1,
+        "no": 0.55
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.07,
+        "flash": 0.1,
+        "no": 0.83
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.06,
+        "flash": 0.6,
+        "no": 0.34
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "flash": 0.1,
+        "no": 0.8
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.9,
+        "flash": 0.04,
+        "no": 0.06
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.88,
+        "flash": 0.04,
+        "no": 0.08
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.92,
+        "flash": 0.04,
+        "no": 0.04
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.12,
+        "flash": 0.08,
+        "no": 0.8
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.93,
+        "flash": 0.03,
+        "no": 0.04
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.93,
+        "flash": 0.03,
+        "no": 0.04
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.93,
+        "flash": 0.03,
+        "no": 0.04
+      },
+      "DCDC_FAULT": {
+        "yes": 0.75,
+        "flash": 0.05,
+        "no": 0.2
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.9,
+        "flash": 0.04,
+        "no": 0.06
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.45,
+        "flash": 0.1,
+        "no": 0.45
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.35,
+        "flash": 0.1,
+        "no": 0.55
+      },
+      "SOC_DRIFT": {
+        "yes": 0.92,
+        "flash": 0.04,
+        "no": 0.04
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.92,
+        "flash": 0.04,
+        "no": 0.04
+      },
+      "EAC_FAULT": {
+        "yes": 0.92,
+        "flash": 0.04,
+        "no": 0.04
+      }
+    }
+  },
+  {
+    "id": "Q_RELAY_CLICK",
+    "text": "按启动键上高压时，电池包/后排附近能听到继电器“嗒”的吸合声吗？",
+    "answers": [
+      {
+        "key": "normal",
+        "label": "有正常的吸合声"
+      },
+      {
+        "key": "repeat",
+        "label": "嗒嗒反复响，或吸合后很快又断开"
+      },
+      {
+        "key": "none",
+        "label": "完全听不到继电器声"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "normal": 0.12,
+        "repeat": 0.06,
+        "none": 0.82
+      },
+      "INSULATION_LOW": {
+        "normal": 0.4,
+        "repeat": 0.2,
+        "none": 0.4
+      },
+      "LV_BATTERY_LOW": {
+        "normal": 0.08,
+        "repeat": 0.22,
+        "none": 0.7
+      },
+      "PRECHARGE_FAIL": {
+        "normal": 0.1,
+        "repeat": 0.75,
+        "none": 0.15
+      },
+      "RELAY_WELD": {
+        "normal": 0.25,
+        "repeat": 0.15,
+        "none": 0.6
+      },
+      "CELL_IMBALANCE": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "BATTERY_OVERTEMP": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "BATTERY_LOW_TEMP": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "BMS_COMM_LOSS": {
+        "normal": 0.1,
+        "repeat": 0.05,
+        "none": 0.85
+      },
+      "DC_CHARGE_FAIL": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "AC_CHARGE_FAIL": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "DCDC_FAULT": {
+        "normal": 0.8,
+        "repeat": 0.05,
+        "none": 0.15
+      },
+      "MOTOR_OVERTEMP": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "RESOLVER_FAULT": {
+        "normal": 0.75,
+        "repeat": 0.08,
+        "none": 0.17
+      },
+      "INVERTER_FAULT": {
+        "normal": 0.7,
+        "repeat": 0.1,
+        "none": 0.2
+      },
+      "SOC_DRIFT": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "BRAKE_VACUUM": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      },
+      "EAC_FAULT": {
+        "normal": 0.85,
+        "repeat": 0.05,
+        "none": 0.1
+      }
+    }
+  },
+  {
+    "id": "Q_RECENT_HV_REPAIR",
+    "text": "故障出现前，车辆是否维修、拆装或更换过高压部件（空调压缩机、PTC、电机控制器、电机、电池包等）？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "最近拆装/更换过"
+      },
+      {
+        "key": "no",
+        "label": "没有"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.65,
+        "no": 0.35
+      },
+      "INSULATION_LOW": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "RELAY_WELD": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "DCDC_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "SOC_DRIFT": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "EAC_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      }
+    }
+  },
+  {
+    "id": "Q_WATER",
+    "text": "故障是否在下雨、涉水或洗车（尤其冲洗底盘）之后出现？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "是，雨天/涉水/洗车后出现"
+      },
+      {
+        "key": "no",
+        "label": "与此无关"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "INSULATION_LOW": {
+        "yes": 0.75,
+        "no": 0.25
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "RELAY_WELD": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.35,
+        "no": 0.65
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "DCDC_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "SOC_DRIFT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "EAC_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      }
+    }
+  },
+  {
+    "id": "Q_WHEN",
+    "text": "故障主要在什么时候出现？",
+    "answers": [
+      {
+        "key": "power_on",
+        "label": "上电/启动时"
+      },
+      {
+        "key": "driving",
+        "label": "行驶过程中"
+      },
+      {
+        "key": "charging",
+        "label": "充电时"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "power_on": 0.7,
+        "driving": 0.27,
+        "charging": 0.03
+      },
+      "INSULATION_LOW": {
+        "power_on": 0.5,
+        "driving": 0.3,
+        "charging": 0.2
+      },
+      "LV_BATTERY_LOW": {
+        "power_on": 0.92,
+        "driving": 0.05,
+        "charging": 0.03
+      },
+      "PRECHARGE_FAIL": {
+        "power_on": 0.94,
+        "driving": 0.03,
+        "charging": 0.03
+      },
+      "RELAY_WELD": {
+        "power_on": 0.7,
+        "driving": 0.05,
+        "charging": 0.25
+      },
+      "CELL_IMBALANCE": {
+        "power_on": 0.1,
+        "driving": 0.6,
+        "charging": 0.3
+      },
+      "BATTERY_OVERTEMP": {
+        "power_on": 0.04,
+        "driving": 0.6,
+        "charging": 0.36
+      },
+      "BATTERY_LOW_TEMP": {
+        "power_on": 0.15,
+        "driving": 0.55,
+        "charging": 0.3
+      },
+      "BMS_COMM_LOSS": {
+        "power_on": 0.65,
+        "driving": 0.3,
+        "charging": 0.05
+      },
+      "DC_CHARGE_FAIL": {
+        "power_on": 0.03,
+        "driving": 0.03,
+        "charging": 0.94
+      },
+      "AC_CHARGE_FAIL": {
+        "power_on": 0.03,
+        "driving": 0.03,
+        "charging": 0.94
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "power_on": 0.03,
+        "driving": 0.03,
+        "charging": 0.94
+      },
+      "DCDC_FAULT": {
+        "power_on": 0.25,
+        "driving": 0.72,
+        "charging": 0.03
+      },
+      "MOTOR_OVERTEMP": {
+        "power_on": 0.03,
+        "driving": 0.94,
+        "charging": 0.03
+      },
+      "RESOLVER_FAULT": {
+        "power_on": 0.35,
+        "driving": 0.62,
+        "charging": 0.03
+      },
+      "INVERTER_FAULT": {
+        "power_on": 0.12,
+        "driving": 0.85,
+        "charging": 0.03
+      },
+      "SOC_DRIFT": {
+        "power_on": 0.1,
+        "driving": 0.75,
+        "charging": 0.15
+      },
+      "BRAKE_VACUUM": {
+        "power_on": 0.4,
+        "driving": 0.57,
+        "charging": 0.03
+      },
+      "EAC_FAULT": {
+        "power_on": 0.25,
+        "driving": 0.7,
+        "charging": 0.05
+      }
+    }
+  },
+  {
+    "id": "Q_CHARGE_MODE",
+    "text": "充电方面，哪种充电方式有问题？",
+    "answers": [
+      {
+        "key": "dc_only",
+        "label": "只有直流快充异常，慢充正常"
+      },
+      {
+        "key": "ac_only",
+        "label": "只有交流慢充异常，快充正常"
+      },
+      {
+        "key": "other",
+        "label": "快慢充都异常，或充电都正常"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "INSULATION_LOW": {
+        "dc_only": 0.3,
+        "ac_only": 0.05,
+        "other": 0.65
+      },
+      "LV_BATTERY_LOW": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "PRECHARGE_FAIL": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "RELAY_WELD": {
+        "dc_only": 0.12,
+        "ac_only": 0.03,
+        "other": 0.85
+      },
+      "CELL_IMBALANCE": {
+        "dc_only": 0.1,
+        "ac_only": 0.05,
+        "other": 0.85
+      },
+      "BATTERY_OVERTEMP": {
+        "dc_only": 0.35,
+        "ac_only": 0.03,
+        "other": 0.62
+      },
+      "BATTERY_LOW_TEMP": {
+        "dc_only": 0.3,
+        "ac_only": 0.05,
+        "other": 0.65
+      },
+      "BMS_COMM_LOSS": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "DC_CHARGE_FAIL": {
+        "dc_only": 0.88,
+        "ac_only": 0.04,
+        "other": 0.08
+      },
+      "AC_CHARGE_FAIL": {
+        "dc_only": 0.04,
+        "ac_only": 0.88,
+        "other": 0.08
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "dc_only": 0.55,
+        "ac_only": 0.2,
+        "other": 0.25
+      },
+      "DCDC_FAULT": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "MOTOR_OVERTEMP": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "RESOLVER_FAULT": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "INVERTER_FAULT": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "SOC_DRIFT": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "BRAKE_VACUUM": {
+        "dc_only": 0.05,
+        "ac_only": 0.05,
+        "other": 0.9
+      },
+      "EAC_FAULT": {
+        "dc_only": 0.15,
+        "ac_only": 0.03,
+        "other": 0.82
+      }
+    }
+  },
+  {
+    "id": "Q_CHARGE_CONNECTED",
+    "text": "插上充电枪后，仪表/中控是否显示“充电枪已连接”？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "显示已连接"
+      },
+      {
+        "key": "no",
+        "label": "没有任何连接显示"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "INSULATION_LOW": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "RELAY_WELD": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.9,
+        "no": 0.1
+      },
+      "DCDC_FAULT": {
+        "yes": 0.8,
+        "no": 0.2
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "SOC_DRIFT": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.92,
+        "no": 0.08
+      },
+      "EAC_FAULT": {
+        "yes": 0.92,
+        "no": 0.08
+      }
+    }
+  },
+  {
+    "id": "Q_CHARGE_STOP_MID",
+    "text": "充电能正常开始，但过一段时间后功率明显下降或自动停止吗？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "会中途降功率或停止"
+      },
+      {
+        "key": "no",
+        "label": "不会/根本无法开始"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "INSULATION_LOW": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.75,
+        "no": 0.25
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.35,
+        "no": 0.65
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "DCDC_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "SOC_DRIFT": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "EAC_FAULT": {
+        "yes": 0.45,
+        "no": 0.55
+      }
+    }
+  },
+  {
+    "id": "Q_PORT_HOT",
+    "text": "充电后摸充电口/枪头是否明显烫手，或端子发黑、烧蚀、塑料发黄变形？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "烫手或有烧蚀痕迹"
+      },
+      {
+        "key": "no",
+        "label": "正常"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "INSULATION_LOW": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "RELAY_WELD": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.8,
+        "no": 0.2
+      },
+      "DCDC_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "SOC_DRIFT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "EAC_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      }
+    }
+  },
+  {
+    "id": "Q_AMBIENT",
+    "text": "故障出现时的环境温度大致是？",
+    "answers": [
+      {
+        "key": "cold",
+        "label": "寒冷（0℃左右或更低）"
+      },
+      {
+        "key": "mild",
+        "label": "常温"
+      },
+      {
+        "key": "hot",
+        "label": "炎热（30℃以上）"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "INSULATION_LOW": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "LV_BATTERY_LOW": {
+        "cold": 0.5,
+        "mild": 0.35,
+        "hot": 0.15
+      },
+      "PRECHARGE_FAIL": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "RELAY_WELD": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "CELL_IMBALANCE": {
+        "cold": 0.45,
+        "mild": 0.4,
+        "hot": 0.15
+      },
+      "BATTERY_OVERTEMP": {
+        "cold": 0.03,
+        "mild": 0.25,
+        "hot": 0.72
+      },
+      "BATTERY_LOW_TEMP": {
+        "cold": 0.88,
+        "mild": 0.09,
+        "hot": 0.03
+      },
+      "BMS_COMM_LOSS": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "DC_CHARGE_FAIL": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "AC_CHARGE_FAIL": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "cold": 0.1,
+        "mild": 0.45,
+        "hot": 0.45
+      },
+      "DCDC_FAULT": {
+        "cold": 0.2,
+        "mild": 0.5,
+        "hot": 0.3
+      },
+      "MOTOR_OVERTEMP": {
+        "cold": 0.04,
+        "mild": 0.3,
+        "hot": 0.66
+      },
+      "RESOLVER_FAULT": {
+        "cold": 0.25,
+        "mild": 0.5,
+        "hot": 0.25
+      },
+      "INVERTER_FAULT": {
+        "cold": 0.15,
+        "mild": 0.5,
+        "hot": 0.35
+      },
+      "SOC_DRIFT": {
+        "cold": 0.35,
+        "mild": 0.5,
+        "hot": 0.15
+      },
+      "BRAKE_VACUUM": {
+        "cold": 0.35,
+        "mild": 0.45,
+        "hot": 0.2
+      },
+      "EAC_FAULT": {
+        "cold": 0.05,
+        "mild": 0.3,
+        "hot": 0.65
+      }
+    }
+  },
+  {
+    "id": "Q_HIGH_LOAD",
+    "text": "故障是否在高负荷工况后出现（长时间高速、连续爬坡、急加速、连续快充）？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "是，高负荷后出现"
+      },
+      {
+        "key": "no",
+        "label": "与负荷无关"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "INSULATION_LOW": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "RELAY_WELD": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "DCDC_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "SOC_DRIFT": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "EAC_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      }
+    }
+  },
+  {
+    "id": "Q_SUDDEN_LOSS",
+    "text": "行驶中是否出现过突然断动力（瞬间失去驱动，而不是逐渐变弱）？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "出现过突然断动力"
+      },
+      {
+        "key": "no",
+        "label": "没有"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "INSULATION_LOW": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.03,
+        "no": 0.97
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.03,
+        "no": 0.97
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.03,
+        "no": 0.97
+      },
+      "DCDC_FAULT": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.8,
+        "no": 0.2
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "SOC_DRIFT": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "EAC_FAULT": {
+        "yes": 0.03,
+        "no": 0.97
+      }
+    }
+  },
+  {
+    "id": "Q_POWER_LIMIT",
+    "text": "车辆能开，但是否明显动力受限（加速无力、乌龟灯/限功率提示）？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "能开但限功率"
+      },
+      {
+        "key": "no",
+        "label": "没有限功率/根本开不了"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "INSULATION_LOW": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.85,
+        "no": 0.15
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.75,
+        "no": 0.25
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "DCDC_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "SOC_DRIFT": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "EAC_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      }
+    }
+  },
+  {
+    "id": "Q_SHAKE_NOISE",
+    "text": "起步或加速时，是否有车身一抖一抖、顿挫，或电机处异常啸叫/咔咔声？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "有抖动/顿挫/异响"
+      },
+      {
+        "key": "no",
+        "label": "没有"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "INSULATION_LOW": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "RELAY_WELD": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "DCDC_FAULT": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.85,
+        "no": 0.15
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "SOC_DRIFT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "EAC_FAULT": {
+        "yes": 0.08,
+        "no": 0.92
+      }
+    }
+  },
+  {
+    "id": "Q_BURN_SMELL",
+    "text": "是否闻到焦糊味、听到“啪”的放电声，或看到冒烟？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "有焦味/放电声/冒烟"
+      },
+      {
+        "key": "no",
+        "label": "没有"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "INSULATION_LOW": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "RELAY_WELD": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.35,
+        "no": 0.65
+      },
+      "DCDC_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "SOC_DRIFT": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.04,
+        "no": 0.96
+      },
+      "EAC_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      }
+    }
+  },
+  {
+    "id": "Q_COOLANT",
+    "text": "打开前舱看膨胀水壶，冷却液是否低于 MIN，或管路接头、车底有渗漏痕迹（甜味/彩色液体）？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "液位低或有渗漏"
+      },
+      {
+        "key": "no",
+        "label": "液位正常无渗漏"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "INSULATION_LOW": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "RELAY_WELD": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.6,
+        "no": 0.4
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "DCDC_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.7,
+        "no": 0.3
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "SOC_DRIFT": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "EAC_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      }
+    }
+  },
+  {
+    "id": "Q_AC_COLD",
+    "text": "打开 A/C 制冷，出风口是否明显变凉？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "明显变凉"
+      },
+      {
+        "key": "no",
+        "label": "不凉/只有自然风/无法开启"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "INSULATION_LOW": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "DCDC_FAULT": {
+        "yes": 0.8,
+        "no": 0.2
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.7,
+        "no": 0.3
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "SOC_DRIFT": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "EAC_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      }
+    }
+  },
+  {
+    "id": "Q_SHUTDOWN_RESIDUAL",
+    "text": "熄火下电后，风扇、真空泵或仪表是否还长时间工作不停，或下电时听不到继电器断开声？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "下电后仍有东西在工作/无断开声"
+      },
+      {
+        "key": "no",
+        "label": "正常下电"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "INSULATION_LOW": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "RELAY_WELD": {
+        "yes": 0.7,
+        "no": 0.3
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "DCDC_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "SOC_DRIFT": {
+        "yes": 0.07,
+        "no": 0.93
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "EAC_FAULT": {
+        "yes": 0.07,
+        "no": 0.93
+      }
+    }
+  },
+  {
+    "id": "Q_INTERMITTENT",
+    "text": "故障是否时有时无，下电重启或停一会儿后能暂时恢复？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "间歇出现，重启/停一会能恢复"
+      },
+      {
+        "key": "no",
+        "label": "持续存在，重启无效"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "INSULATION_LOW": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.4,
+        "no": 0.6
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.35,
+        "no": 0.65
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.45,
+        "no": 0.55
+      },
+      "DCDC_FAULT": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.6,
+        "no": 0.4
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.6,
+        "no": 0.4
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "SOC_DRIFT": {
+        "yes": 0.55,
+        "no": 0.45
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "EAC_FAULT": {
+        "yes": 0.45,
+        "no": 0.55
+      }
+    }
+  },
+  {
+    "id": "Q_SOC_JUMP",
+    "text": "表显电量是否会突然跳变（如 30% 直接掉到 10%），或低电量时突然掉电、限功率？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "有跳变/突然掉电"
+      },
+      {
+        "key": "no",
+        "label": "电量变化平稳"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "INSULATION_LOW": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "RELAY_WELD": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.8,
+        "no": 0.2
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.08,
+        "no": 0.92
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.5,
+        "no": 0.5
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "DCDC_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "SOC_DRIFT": {
+        "yes": 0.88,
+        "no": 0.12
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.06,
+        "no": 0.94
+      },
+      "EAC_FAULT": {
+        "yes": 0.06,
+        "no": 0.94
+      }
+    }
+  },
+  {
+    "id": "Q_LONG_PARK",
+    "text": "故障出现前，车辆是否长时间停放（一周以上）未使用或未充电？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "长时间停放过"
+      },
+      {
+        "key": "no",
+        "label": "日常正常使用"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "INSULATION_LOW": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.75,
+        "no": 0.25
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "RELAY_WELD": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.3,
+        "no": 0.7
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "DCDC_FAULT": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "SOC_DRIFT": {
+        "yes": 0.35,
+        "no": 0.65
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.15,
+        "no": 0.85
+      },
+      "EAC_FAULT": {
+        "yes": 0.1,
+        "no": 0.9
+      }
+    }
+  },
+  {
+    "id": "Q_LV_VOLT_READY",
+    "text": "用万用表量 12V 蓄电池端电压：车辆 READY 后电压大约是多少？",
+    "answers": [
+      {
+        "key": "charging",
+        "label": "13.5~14.5V（正常充电）"
+      },
+      {
+        "key": "low",
+        "label": "仍在 12.6V 以下"
+      },
+      {
+        "key": "no_ready",
+        "label": "车辆无法 READY，量不了"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "charging": 0.08,
+        "low": 0.04,
+        "no_ready": 0.88
+      },
+      "INSULATION_LOW": {
+        "charging": 0.4,
+        "low": 0.05,
+        "no_ready": 0.55
+      },
+      "LV_BATTERY_LOW": {
+        "charging": 0.35,
+        "low": 0.05,
+        "no_ready": 0.6
+      },
+      "PRECHARGE_FAIL": {
+        "charging": 0.08,
+        "low": 0.05,
+        "no_ready": 0.87
+      },
+      "RELAY_WELD": {
+        "charging": 0.1,
+        "low": 0.04,
+        "no_ready": 0.86
+      },
+      "CELL_IMBALANCE": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "BATTERY_OVERTEMP": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "BATTERY_LOW_TEMP": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "BMS_COMM_LOSS": {
+        "charging": 0.1,
+        "low": 0.05,
+        "no_ready": 0.85
+      },
+      "DC_CHARGE_FAIL": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "AC_CHARGE_FAIL": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "DCDC_FAULT": {
+        "charging": 0.06,
+        "low": 0.84,
+        "no_ready": 0.1
+      },
+      "MOTOR_OVERTEMP": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "RESOLVER_FAULT": {
+        "charging": 0.48,
+        "low": 0.04,
+        "no_ready": 0.48
+      },
+      "INVERTER_FAULT": {
+        "charging": 0.4,
+        "low": 0.05,
+        "no_ready": 0.55
+      },
+      "SOC_DRIFT": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "BRAKE_VACUUM": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      },
+      "EAC_FAULT": {
+        "charging": 0.9,
+        "low": 0.05,
+        "no_ready": 0.05
+      }
+    }
+  },
+  {
+    "id": "Q_BRAKE_PEDAL",
+    "text": "上电后连续踩几脚刹车，踏板是否明显变硬、助力不足，或前舱有真空泵长时间嗡嗡响？",
+    "answers": [
+      {
+        "key": "yes",
+        "label": "踏板变硬或真空泵异常响"
+      },
+      {
+        "key": "no",
+        "label": "制动正常"
+      }
+    ],
+    "p": {
+      "HVIL_OPEN": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "INSULATION_LOW": {
+        "yes": 0.1,
+        "no": 0.9
+      },
+      "LV_BATTERY_LOW": {
+        "yes": 0.25,
+        "no": 0.75
+      },
+      "PRECHARGE_FAIL": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "RELAY_WELD": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "CELL_IMBALANCE": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BATTERY_LOW_TEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BMS_COMM_LOSS": {
+        "yes": 0.12,
+        "no": 0.88
+      },
+      "DC_CHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "AC_CHARGE_FAIL": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "CHARGE_PORT_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "DCDC_FAULT": {
+        "yes": 0.2,
+        "no": 0.8
+      },
+      "MOTOR_OVERTEMP": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "RESOLVER_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "INVERTER_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "SOC_DRIFT": {
+        "yes": 0.05,
+        "no": 0.95
+      },
+      "BRAKE_VACUUM": {
+        "yes": 0.9,
+        "no": 0.1
+      },
+      "EAC_FAULT": {
+        "yes": 0.05,
+        "no": 0.95
+      }
+    }
+  }
+]

@@ -1,0 +1,732 @@
+[
+  {
+    "id": "R_HVIL_OPEN",
+    "param": "hvil_state",
+    "op": "==",
+    "value": "open",
+    "lr": {
+      "HVIL_OPEN": 25
+    },
+    "level": "fault",
+    "message": "高压互锁状态为断开",
+    "source": "整车高压互锁设计要求，按维修手册逐段排查"
+  },
+  {
+    "id": "R_HVIL_OK",
+    "param": "hvil_state",
+    "op": "==",
+    "value": "closed",
+    "lr": {
+      "HVIL_OPEN": 0.08
+    },
+    "level": "ok",
+    "message": "高压互锁闭合，基本排除互锁断路",
+    "source": "数据流判读"
+  },
+  {
+    "id": "R_INSUL_FAULT",
+    "param": "insul_ohm_per_v",
+    "op": "<",
+    "value": 100,
+    "lr": {
+      "INSULATION_LOW": 25
+    },
+    "level": "fault",
+    "message": "绝缘电阻 {value} Ω/V，低于国标对直流电路 100 Ω/V 的最低要求",
+    "source": "GB 18384-2020《电动汽车安全要求》绝缘电阻要求"
+  },
+  {
+    "id": "R_INSUL_WARN",
+    "param": "insul_ohm_per_v",
+    "op": "between",
+    "value": [
+      100,
+      500
+    ],
+    "lr": {
+      "INSULATION_LOW": 4
+    },
+    "level": "warn",
+    "message": "绝缘电阻 {value} Ω/V，虽满足 100 Ω/V 下限，但低于 500 Ω/V，存在受潮或老化迹象",
+    "source": "GB 18384-2020（交直流电路未隔离时要求 500 Ω/V）；工程经验"
+  },
+  {
+    "id": "R_INSUL_OK",
+    "param": "insul_ohm_per_v",
+    "op": ">=",
+    "value": 500,
+    "lr": {
+      "INSULATION_LOW": 0.1
+    },
+    "level": "ok",
+    "message": "绝缘电阻 {value} Ω/V，绝缘良好",
+    "source": "GB 18384-2020"
+  },
+  {
+    "id": "R_PRECHG_FAIL",
+    "param": "precharge_ratio",
+    "op": "<",
+    "value": 90,
+    "lr": {
+      "PRECHARGE_FAIL": 15
+    },
+    "level": "fault",
+    "message": "预充结束时母线电压只有电池电压的 {value}%，未达到 90%",
+    "source": "工程经验（多数 BMS 以 90%~95% 作为预充完成判据，以手册为准）"
+  },
+  {
+    "id": "R_PRECHG_WARN",
+    "param": "precharge_ratio",
+    "op": "between",
+    "value": [
+      90,
+      95
+    ],
+    "lr": {
+      "PRECHARGE_FAIL": 2
+    },
+    "level": "warn",
+    "message": "预充比例 {value}%，处于临界区",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_PRECHG_OK",
+    "param": "precharge_ratio",
+    "op": ">=",
+    "value": 95,
+    "lr": {
+      "PRECHARGE_FAIL": 0.15
+    },
+    "level": "ok",
+    "message": "预充比例 {value}%，预充正常",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_RESIDUAL_HIGH",
+    "param": "bus_v_after_off",
+    "op": ">",
+    "value": 60,
+    "lr": {
+      "RELAY_WELD": 15
+    },
+    "level": "fault",
+    "message": "下电后母线仍有 {value} V，高于 60 V 安全电压，继电器可能粘连或主动放电失效",
+    "source": "GB 18384-2020：直流 60 V 为 A/B 级电压分界"
+  },
+  {
+    "id": "R_RESIDUAL_OK",
+    "param": "bus_v_after_off",
+    "op": "<=",
+    "value": 60,
+    "lr": {
+      "RELAY_WELD": 0.3
+    },
+    "level": "ok",
+    "message": "下电后母线电压 {value} V，已降到安全范围",
+    "source": "GB 18384-2020"
+  },
+  {
+    "id": "R_CELLDIFF_FAULT",
+    "param": "cell_diff_mv",
+    "op": ">=",
+    "value": 300,
+    "lr": {
+      "CELL_IMBALANCE": 12,
+      "SOC_DRIFT": 2
+    },
+    "level": "fault",
+    "message": "单体压差 {value} mV，超过 300 mV",
+    "source": "工程经验（常见 BMS 压差报警阈值 300 mV 左右，以手册为准）"
+  },
+  {
+    "id": "R_CELLDIFF_WARN",
+    "param": "cell_diff_mv",
+    "op": "between",
+    "value": [
+      50,
+      300
+    ],
+    "lr": {
+      "CELL_IMBALANCE": 3,
+      "SOC_DRIFT": 1.5
+    },
+    "level": "warn",
+    "message": "单体压差 {value} mV，偏大，建议做均衡后复测",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_CELLDIFF_OK",
+    "param": "cell_diff_mv",
+    "op": "<",
+    "value": 50,
+    "lr": {
+      "CELL_IMBALANCE": 0.2
+    },
+    "level": "ok",
+    "message": "单体压差 {value} mV，一致性良好",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_BAT_HOT",
+    "param": "cell_max_t",
+    "op": ">=",
+    "value": 55,
+    "lr": {
+      "BATTERY_OVERTEMP": 15
+    },
+    "level": "fault",
+    "message": "电池最高温度 {value} ℃，超过 55 ℃",
+    "source": "工程经验（多数电芯工作上限约 55~60 ℃，BMS 会限功率）"
+  },
+  {
+    "id": "R_BAT_WARM",
+    "param": "cell_max_t",
+    "op": "between",
+    "value": [
+      45,
+      55
+    ],
+    "lr": {
+      "BATTERY_OVERTEMP": 4
+    },
+    "level": "warn",
+    "message": "电池最高温度 {value} ℃，偏高",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_BAT_T_OK",
+    "param": "cell_max_t",
+    "op": "between",
+    "value": [
+      10,
+      45
+    ],
+    "lr": {
+      "BATTERY_OVERTEMP": 0.2
+    },
+    "level": "ok",
+    "message": "电池最高温度 {value} ℃，处于正常工作区",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_BAT_COLD",
+    "param": "cell_min_t",
+    "op": "<",
+    "value": -10,
+    "lr": {
+      "BATTERY_LOW_TEMP": 12
+    },
+    "level": "fault",
+    "message": "电池最低温度 {value} ℃，低于 -10 ℃，可用容量和充电功率会明显下降",
+    "source": "工程经验（锂电池低温下内阻增大，BMS 限制充放电电流）"
+  },
+  {
+    "id": "R_BAT_COOL",
+    "param": "cell_min_t",
+    "op": "between",
+    "value": [
+      -10,
+      5
+    ],
+    "lr": {
+      "BATTERY_LOW_TEMP": 5
+    },
+    "level": "warn",
+    "message": "电池最低温度 {value} ℃，偏低",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_BAT_COLD_OK",
+    "param": "cell_min_t",
+    "op": ">",
+    "value": 15,
+    "lr": {
+      "BATTERY_LOW_TEMP": 0.1
+    },
+    "level": "ok",
+    "message": "电池最低温度 {value} ℃，排除低温影响",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_TEMPDIFF",
+    "param": "temp_diff",
+    "op": ">",
+    "value": 10,
+    "lr": {
+      "BATTERY_OVERTEMP": 4
+    },
+    "level": "warn",
+    "message": "电池包内温差 {value} ℃，超过 10 ℃，热管理可能不均匀或局部冷却失效",
+    "source": "工程经验（良好热管理一般把温差控制在 5~8 ℃）"
+  },
+  {
+    "id": "R_LV_OFF_LOW",
+    "param": "lv_voltage_off",
+    "op": "<",
+    "value": 11.8,
+    "lr": {
+      "LV_BATTERY_LOW": 12,
+      "DCDC_FAULT": 2
+    },
+    "level": "fault",
+    "message": "静置 12V 电压 {value} V，蓄电池严重亏电",
+    "source": "铅酸蓄电池开路电压与荷电状态对应关系（12.0 V 约 25%）"
+  },
+  {
+    "id": "R_LV_OFF_WARN",
+    "param": "lv_voltage_off",
+    "op": "between",
+    "value": [
+      11.8,
+      12.4
+    ],
+    "lr": {
+      "LV_BATTERY_LOW": 4,
+      "DCDC_FAULT": 1.5
+    },
+    "level": "warn",
+    "message": "静置 12V 电压 {value} V，电量不足",
+    "source": "铅酸蓄电池开路电压与荷电状态对应关系"
+  },
+  {
+    "id": "R_LV_OFF_OK",
+    "param": "lv_voltage_off",
+    "op": ">=",
+    "value": 12.4,
+    "lr": {
+      "LV_BATTERY_LOW": 0.2
+    },
+    "level": "ok",
+    "message": "静置 12V 电压 {value} V，蓄电池电量正常",
+    "source": "铅酸蓄电池开路电压与荷电状态对应关系"
+  },
+  {
+    "id": "R_DCDC_LOW",
+    "param": "lv_voltage_ready",
+    "op": "<",
+    "value": 13.0,
+    "lr": {
+      "DCDC_FAULT": 15,
+      "LV_BATTERY_LOW": 1.5
+    },
+    "level": "fault",
+    "message": "READY 后 12V 只有 {value} V，DC-DC 没有输出或输出不足",
+    "source": "工程经验（DC-DC 正常输出 13.5~14.8 V）"
+  },
+  {
+    "id": "R_DCDC_MARGINAL",
+    "param": "lv_voltage_ready",
+    "op": "between",
+    "value": [
+      13.0,
+      13.5
+    ],
+    "lr": {
+      "DCDC_FAULT": 3
+    },
+    "level": "warn",
+    "message": "READY 后 12V 为 {value} V，略低",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_DCDC_OK",
+    "param": "lv_voltage_ready",
+    "op": "between",
+    "value": [
+      13.5,
+      14.8
+    ],
+    "lr": {
+      "DCDC_FAULT": 0.15
+    },
+    "level": "ok",
+    "message": "READY 后 12V 为 {value} V，DC-DC 输出正常",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_DCDC_HIGH",
+    "param": "lv_voltage_ready",
+    "op": ">=",
+    "value": 14.8,
+    "lr": {
+      "DCDC_FAULT": 8
+    },
+    "level": "fault",
+    "message": "READY 后 12V 达 {value} V，DC-DC 输出过压",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_CAN_OK",
+    "param": "can_res",
+    "op": "between",
+    "value": [
+      54,
+      66
+    ],
+    "lr": {
+      "BMS_COMM_LOSS": 0.3
+    },
+    "level": "ok",
+    "message": "CAN 终端电阻 {value} Ω，正常",
+    "source": "ISO 11898 高速 CAN：两端各 120 Ω 终端电阻"
+  },
+  {
+    "id": "R_CAN_ONE_END",
+    "param": "can_res",
+    "op": "between",
+    "value": [
+      100,
+      140
+    ],
+    "lr": {
+      "BMS_COMM_LOSS": 8
+    },
+    "level": "fault",
+    "message": "CAN 终端电阻 {value} Ω，约为 120 Ω，说明一侧终端电阻或支线断开",
+    "source": "ISO 11898 高速 CAN"
+  },
+  {
+    "id": "R_CAN_OPEN",
+    "param": "can_res",
+    "op": ">",
+    "value": 200,
+    "lr": {
+      "BMS_COMM_LOSS": 10
+    },
+    "level": "fault",
+    "message": "CAN 终端电阻 {value} Ω，总线断路",
+    "source": "ISO 11898 高速 CAN"
+  },
+  {
+    "id": "R_CAN_SHORT",
+    "param": "can_res",
+    "op": "<",
+    "value": 40,
+    "lr": {
+      "BMS_COMM_LOSS": 8
+    },
+    "level": "fault",
+    "message": "CAN 终端电阻 {value} Ω，偏低，可能 CAN-H 与 CAN-L 短接或多接了终端电阻",
+    "source": "ISO 11898 高速 CAN"
+  },
+  {
+    "id": "R_CC1_OK",
+    "param": "dc_cc1_v",
+    "op": "between",
+    "value": [
+      3.2,
+      4.8
+    ],
+    "lr": {
+      "DC_CHARGE_FAIL": 0.6
+    },
+    "level": "ok",
+    "message": "CC1 电压 {value} V，充电枪已完全连接",
+    "source": "GB/T 18487.1 附录 B：检测点 1 完全连接约 4 V"
+  },
+  {
+    "id": "R_CC1_HALF",
+    "param": "dc_cc1_v",
+    "op": "between",
+    "value": [
+      5.2,
+      6.8
+    ],
+    "lr": {
+      "DC_CHARGE_FAIL": 6
+    },
+    "level": "fault",
+    "message": "CC1 电压 {value} V，约 6 V，枪头机械锁止未到位或 S 开关异常",
+    "source": "GB/T 18487.1 附录 B：检测点 1 约 6 V 为未完全连接"
+  },
+  {
+    "id": "R_CC1_NONE",
+    "param": "dc_cc1_v",
+    "op": ">",
+    "value": 10.8,
+    "lr": {
+      "DC_CHARGE_FAIL": 8
+    },
+    "level": "fault",
+    "message": "CC1 电压 {value} V，约 12 V，桩端未检测到车辆插座（车端 CC1 电阻或线路开路）",
+    "source": "GB/T 18487.1 附录 B：检测点 1 约 12 V 为未连接"
+  },
+  {
+    "id": "R_AUX_LOW",
+    "param": "dc_aux_v",
+    "op": "<",
+    "value": 10.8,
+    "lr": {
+      "DC_CHARGE_FAIL": 10
+    },
+    "level": "fault",
+    "message": "辅助电源仅 {value} V，BMS 无法被唤醒参与握手",
+    "source": "GB/T 18487.1 / GB/T 27930：充电机提供 12 V 低压辅助电源"
+  },
+  {
+    "id": "R_AUX_OK",
+    "param": "dc_aux_v",
+    "op": "between",
+    "value": [
+      10.8,
+      13.2
+    ],
+    "lr": {
+      "DC_CHARGE_FAIL": 0.7
+    },
+    "level": "ok",
+    "message": "辅助电源 {value} V，正常",
+    "source": "GB/T 18487.1 / GB/T 27930"
+  },
+  {
+    "id": "R_CP_NOCONN",
+    "param": "ac_cp_v",
+    "op": ">",
+    "value": 10.8,
+    "lr": {
+      "AC_CHARGE_FAIL": 6
+    },
+    "level": "fault",
+    "message": "CP 电压 {value} V，约 12 V，桩端认为未连接（车端 CP 电阻或线路开路）",
+    "source": "GB/T 18487.1 附录 A：CP 检测点 12 V 为未连接"
+  },
+  {
+    "id": "R_CP_NOTREADY",
+    "param": "ac_cp_v",
+    "op": "between",
+    "value": [
+      8.0,
+      10.0
+    ],
+    "lr": {
+      "AC_CHARGE_FAIL": 4
+    },
+    "level": "warn",
+    "message": "CP 电压 {value} V，约 9 V，已连接但车辆未就绪（车端 S2 未闭合，查 OBC / 车载控制器）",
+    "source": "GB/T 18487.1 附录 A：9 V 为已连接未就绪"
+  },
+  {
+    "id": "R_CP_READY",
+    "param": "ac_cp_v",
+    "op": "between",
+    "value": [
+      5.0,
+      7.0
+    ],
+    "lr": {
+      "AC_CHARGE_FAIL": 0.5
+    },
+    "level": "ok",
+    "message": "CP 电压 {value} V，约 6 V，车桩已就绪，导引信号正常",
+    "source": "GB/T 18487.1 附录 A：6 V 为充电就绪"
+  },
+  {
+    "id": "R_CP_SHORT",
+    "param": "ac_cp_v",
+    "op": "<",
+    "value": 4.0,
+    "lr": {
+      "AC_CHARGE_FAIL": 6
+    },
+    "level": "fault",
+    "message": "CP 电压 {value} V，异常偏低，CP 线路可能对地短路",
+    "source": "GB/T 18487.1 附录 A"
+  },
+  {
+    "id": "R_CC_OPEN",
+    "param": "ac_cc_ohm",
+    "op": ">",
+    "value": 3000,
+    "lr": {
+      "AC_CHARGE_FAIL": 10
+    },
+    "level": "fault",
+    "message": "CC-PE 电阻 {value} Ω，开路，车辆识别不到充电枪",
+    "source": "GB/T 18487.1 附录 A：RC 取 1.5 kΩ / 680 Ω / 220 Ω / 100 Ω"
+  },
+  {
+    "id": "R_CC_OK",
+    "param": "ac_cc_ohm",
+    "op": "between",
+    "value": [
+      80,
+      1800
+    ],
+    "lr": {
+      "AC_CHARGE_FAIL": 0.6
+    },
+    "level": "ok",
+    "message": "CC-PE 电阻 {value} Ω，在标准取值范围内",
+    "source": "GB/T 18487.1 附录 A"
+  },
+  {
+    "id": "R_PORT_HOT",
+    "param": "charge_port_t",
+    "op": ">=",
+    "value": 85,
+    "lr": {
+      "CHARGE_PORT_OVERTEMP": 12
+    },
+    "level": "fault",
+    "message": "充电口温度 {value} ℃，过高",
+    "source": "工程经验（多数车型充电口 80~90 ℃ 开始降功率或停充，以手册为准）"
+  },
+  {
+    "id": "R_PORT_WARM",
+    "param": "charge_port_t",
+    "op": "between",
+    "value": [
+      60,
+      85
+    ],
+    "lr": {
+      "CHARGE_PORT_OVERTEMP": 3
+    },
+    "level": "warn",
+    "message": "充电口温度 {value} ℃，偏高，检查端子接触电阻",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_PORT_SENSOR",
+    "param": "charge_port_t",
+    "op": "<=",
+    "value": -39,
+    "lr": {
+      "CHARGE_PORT_OVERTEMP": 10
+    },
+    "level": "fault",
+    "message": "充电口温度读数 {value} ℃，接近 -40 ℃，通常是温度传感器（NTC）开路",
+    "source": "工程经验（NTC 开路时控制器多显示量程下限）"
+  },
+  {
+    "id": "R_MOTOR_HOT",
+    "param": "motor_t",
+    "op": ">=",
+    "value": 150,
+    "lr": {
+      "MOTOR_OVERTEMP": 10
+    },
+    "level": "fault",
+    "message": "电机温度 {value} ℃，过高",
+    "source": "工程经验（多数驱动电机 140~150 ℃ 开始降功率）"
+  },
+  {
+    "id": "R_MOTOR_WARM",
+    "param": "motor_t",
+    "op": "between",
+    "value": [
+      120,
+      150
+    ],
+    "lr": {
+      "MOTOR_OVERTEMP": 4
+    },
+    "level": "warn",
+    "message": "电机温度 {value} ℃，偏高",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_MOTOR_OK",
+    "param": "motor_t",
+    "op": "<",
+    "value": 100,
+    "lr": {
+      "MOTOR_OVERTEMP": 0.3
+    },
+    "level": "ok",
+    "message": "电机温度 {value} ℃，正常",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_IGBT_HOT",
+    "param": "igbt_t",
+    "op": ">=",
+    "value": 90,
+    "lr": {
+      "MOTOR_OVERTEMP": 8,
+      "INVERTER_FAULT": 2
+    },
+    "level": "fault",
+    "message": "电机控制器温度 {value} ℃，过高",
+    "source": "工程经验（以手册限值为准）"
+  },
+  {
+    "id": "R_IGBT_WARM",
+    "param": "igbt_t",
+    "op": "between",
+    "value": [
+      75,
+      90
+    ],
+    "lr": {
+      "MOTOR_OVERTEMP": 3
+    },
+    "level": "warn",
+    "message": "电机控制器温度 {value} ℃，偏高",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_COOLANT_LOW",
+    "param": "coolant_level",
+    "op": "==",
+    "value": "low",
+    "lr": {
+      "MOTOR_OVERTEMP": 6,
+      "BATTERY_OVERTEMP": 2.5
+    },
+    "level": "fault",
+    "message": "冷却液液位偏低",
+    "source": "维修手册冷却系统检查要求"
+  },
+  {
+    "id": "R_COOLANT_OK",
+    "param": "coolant_level",
+    "op": "==",
+    "value": "normal",
+    "lr": {
+      "MOTOR_OVERTEMP": 0.6
+    },
+    "level": "ok",
+    "message": "冷却液液位正常",
+    "source": "维修手册冷却系统检查要求"
+  },
+  {
+    "id": "R_VAC_LOW",
+    "param": "vacuum_kpa",
+    "op": "<",
+    "value": 40,
+    "lr": {
+      "BRAKE_VACUUM": 12
+    },
+    "level": "fault",
+    "message": "真空度只有 {value} kPa，制动助力不足",
+    "source": "工程经验（电子真空泵一般在 50 kPa 左右启动、70 kPa 左右停止）"
+  },
+  {
+    "id": "R_VAC_WARN",
+    "param": "vacuum_kpa",
+    "op": "between",
+    "value": [
+      40,
+      50
+    ],
+    "lr": {
+      "BRAKE_VACUUM": 3
+    },
+    "level": "warn",
+    "message": "真空度 {value} kPa，偏低",
+    "source": "工程经验"
+  },
+  {
+    "id": "R_VAC_OK",
+    "param": "vacuum_kpa",
+    "op": ">=",
+    "value": 50,
+    "lr": {
+      "BRAKE_VACUUM": 0.2
+    },
+    "level": "ok",
+    "message": "真空度 {value} kPa，正常",
+    "source": "工程经验"
+  }
+]

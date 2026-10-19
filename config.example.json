@@ -1,0 +1,7 @@
+{
+  "_说明": "这是填写示例。真正生效的是同目录的 config.json，照这个格式填进去就行，也可以在网页右上角“设置”里填",
+  "api_base": "https://api.deepseek.com/v1",
+  "api_key": "sk-把你的key填这里",
+  "model": "deepseek-chat",
+  "vision_model": "（可选）能看图的模型，比如 qwen-vl-max；对应的 api_base 要换成 https://dashscope.aliyuncs.com/compatible-mode/v1"
+}

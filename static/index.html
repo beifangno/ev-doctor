@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>电诊 EV-Doctor · 新能源汽车故障诊断</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#E9EDF0; --paper:#FFFFFF; --ink:#15243B; --muted:#66727F; --line:#CBD3DA;
+  --steel:#2F5AA8; --steel-soft:#DCE4F2; --hv:#EE6A1F; --hv-soft:#FDEBDD;
+  --red:#B3261E; --amber:#B26A00; --green:#2E7D4F;
+  --num:"Bahnschrift","DIN Alternate","Roboto Condensed","Arial Narrow",sans-serif;
+  --cn:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.7 var(--cn);-webkit-font-smoothing:antialiased}
+button,textarea,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.sr{position:absolute;left:-9999px}
+[hidden]{display:none!important}
+
+/* 顶栏 */
+.top{display:flex;align-items:center;gap:28px;padding:0 32px;border-bottom:1px solid var(--line);background:var(--paper);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:baseline;gap:10px;padding:14px 0}
+.brand b{font-size:20px;letter-spacing:.04em}
+.brand span{font-family:var(--num);font-size:17px;color:var(--muted)}
+nav{display:flex;gap:4px;align-self:stretch}
+nav button{border:0;background:none;padding:0 14px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+nav button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+nav button:hover{color:var(--ink)}
+.stats{margin-left:auto;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{font-family:var(--num);font-weight:600;color:var(--ink);font-size:15px;margin:0 2px}
+
+main{max-width:1320px;margin:0 auto;padding:28px 32px 60px}
+.view-diag{display:grid;grid-template-columns:minmax(330px,430px) 1fr;gap:30px}
+@media (max-width:960px){.view-diag{grid-template-columns:1fr}main{padding:18px}.top{padding:0 16px;gap:12px;flex-wrap:wrap}.stats{display:none}}
+
+/* 左栏 */
+h1{font-size:28px;line-height:1.25;margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 16px}
+textarea{width:100%;min-height:110px;resize:vertical;padding:12px 14px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);line-height:1.65}
+textarea:focus,input:focus,select:focus{border-color:var(--steel);outline:none;box-shadow:0 0 0 3px var(--steel-soft)}
+.btn{border:0;border-radius:6px;padding:11px 22px;cursor:pointer;font-weight:600}
+.btn-main{background:var(--ink);color:#fff}
+.btn-main:hover{background:#22365A}
+.btn-main:disabled{background:#8994A2;cursor:default}
+.btn-line{background:var(--paper);border:1.5px solid var(--line);padding:7px 14px;font-weight:400}
+.btn-line:hover{border-color:var(--ink)}
+.link{background:none;border:0;padding:0;color:var(--steel);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.actions{display:flex;gap:14px;align-items:center;margin-top:14px}
+.actions .btn-main{flex:1}
+.hint{font-size:13px;color:var(--muted);margin-top:8px;min-height:1.4em}
+.hint.err{color:var(--red)}
+
+details.measure{margin-top:14px;background:var(--paper);border:1.5px solid var(--line);border-radius:6px}
+details.measure[open]{border-color:#AEB9C4}
+details.measure summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.measure summary::-webkit-details-marker{display:none}
+details.measure summary::after{content:"展开";font-weight:400;color:var(--steel);font-size:13px}
+details.measure[open] summary::after{content:"收起"}
+.m-count{font-family:var(--num);color:var(--steel);font-weight:400}
+.m-body{padding:0 14px 12px}
+.m-demo{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;font-size:13px;color:var(--muted);align-items:center}
+.m-group{margin-top:10px}
+.m-group h3{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 4px;border-bottom:1px solid var(--line);padding-bottom:2px}
+.m-row{display:grid;grid-template-columns:1fr 112px 34px;gap:8px;align-items:center;padding:3px 0}
+.m-row label{font-size:14px;line-height:1.35}
+.m-row label small{display:block;color:var(--muted);font-size:12px}
+.m-row input,.m-row select{width:100%;padding:5px 8px;border:1.5px solid var(--line);border-radius:4px;background:#fff;font-family:var(--num);font-size:15px}
+.m-row select{font-family:var(--cn);font-size:14px}
+.m-row .u{font-size:12px;color:var(--muted)}
+.m-row.filled input,.m-row.filled select{border-color:var(--steel);background:#F5F8FD}
+
+.samples{margin-top:24px}
+.samples h2{font-size:14px;font-weight:600;margin:0 0 6px;color:var(--muted)}
+.sample{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:9px 2px;cursor:pointer;font-size:14px;line-height:1.55}
+.sample:last-child{border-bottom:1px solid var(--line)}
+.sample:hover{color:var(--steel)}
+
+/* 右栏 */
+.panel{background:var(--paper);border-radius:10px;padding:26px 32px;min-height:560px;align-self:start}
+@media (max-width:960px){.panel{padding:18px;min-height:0}}
+.empty{color:var(--muted);max-width:32em;margin:70px auto;text-align:center}
+.empty strong{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
+.empty p{margin:4px 0}
+
+.rank-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.rank-head h2{font-size:16px;margin:0}
+.speed{font-family:var(--num);font-size:14px;color:var(--muted)}
+.speed b{font-size:20px;color:var(--ink);font-weight:600}
+.cand{display:grid;grid-template-columns:1fr auto;column-gap:16px;padding:9px 0}
+.cand + .cand{border-top:1px dashed var(--line)}
+.cand-name{font-weight:600}
+.cand-name em{font-style:normal;font-weight:400;color:var(--muted);font-size:13px;margin-left:8px}
+.cand-pct{font-family:var(--num);font-size:30px;line-height:1;font-weight:600;font-variant-numeric:tabular-nums;align-self:center;grid-row:span 2;min-width:3.6ch;text-align:right}
+.cand-pct small{font-size:15px;color:var(--muted);margin-left:1px}
+.bar{height:9px;background:var(--steel-soft);border-radius:2px;overflow:hidden;margin:6px 0 2px}
+.bar > div{height:100%;width:0;background:var(--steel);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.cand:first-child .cand-pct{font-size:50px}
+.cand:first-child .bar{height:15px}
+.cand.minor .cand-pct{font-size:20px;color:var(--muted)}
+.cand.minor .bar > div{background:#9EB0CF}
+.tag{display:inline-block;padding:0 7px;border-radius:3px;font-size:12px;background:var(--bg);color:var(--muted);margin-left:6px;vertical-align:2px;font-weight:400}
+.tag.hv{background:var(--hv-soft);color:#A8440B}
+.tag.dtc{font-family:var(--num);font-size:13px;background:var(--steel-soft);color:var(--steel);margin:0 4px 4px 0}
+.tag.conf-高{background:#DDF0E4;color:var(--green)}
+.tag.conf-中{background:#FBEFD9;color:var(--amber)}
+.tag.conf-低{background:#F7E1DF;color:var(--red)}
+
+.ask{margin:20px 0 6px;padding:16px 18px;border-left:5px solid var(--steel);background:#F4F7FC;border-radius:0 8px 8px 0}
+.ask-q{font-size:17px;font-weight:600;margin:2px 0 12px;line-height:1.5}
+.ask-sub{font-size:13px;color:var(--muted)}
+.ask-opts{display:flex;flex-wrap:wrap;gap:8px}
+.ask-opts button{border:1.5px solid var(--steel);background:#fff;color:var(--steel);border-radius:6px;padding:7px 14px;cursor:pointer;font-weight:600;font-size:14px}
+.ask-opts button:hover{background:var(--steel);color:#fff}
+.ask-opts button.unk{border-color:var(--line);color:var(--muted);font-weight:400}
+.ask-opts button.unk:hover{background:var(--bg);color:var(--ink)}
+.answered{margin-top:10px;font-size:13px;color:var(--muted)}
+.answered div{display:flex;gap:6px;align-items:baseline}
+.answered b{color:var(--ink);font-weight:600}
+.answered button{border:0;background:none;color:var(--muted);cursor:pointer;padding:0 4px;font-size:15px;line-height:1}
+.answered button:hover{color:var(--red)}
+.measure-tip{margin:14px 0 0;font-size:14px;padding:10px 14px;background:var(--bg);border-radius:6px}
+.measure-tip ul{margin:4px 0 0;padding-left:1.2em}
+.measure-tip li small{color:var(--muted)}
+
+section.block{margin-top:24px}
+section.block > h3{font-size:15px;margin:0 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.ev{list-style:none;margin:0;padding:0}
+.ev li{display:grid;grid-template-columns:14px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid #EEF1F4}
+.ev li::before{content:"";width:9px;height:9px;border-radius:50%;margin-top:8px;background:#A6B0BA}
+.ev li.fault::before{background:var(--red)}
+.ev li.warn::before{background:var(--amber)}
+.ev li.ok::before{background:var(--green)}
+.ev .src{display:block;font-size:12px;color:var(--muted);line-height:1.5}
+.ev .ref{font-size:12px;color:var(--green);border:1px solid #B5D6C1;border-radius:3px;padding:0 5px;margin-left:6px}
+.derived{font-size:13px;color:var(--muted);margin-top:6px}
+.derived b{font-family:var(--num);color:var(--ink);font-size:15px}
+
+.hv-band{display:flex;gap:12px;align-items:flex-start;margin:20px 0 0;padding:12px 16px;background:var(--hv-soft);border-left:5px solid var(--hv);border-radius:0 6px 6px 0;font-size:14px}
+.hv-band svg{flex:none;margin-top:2px}
+
+.report h4{font-size:14px;margin:14px 0 4px;color:var(--muted)}
+.report p{margin:4px 0}
+.report ol,.report ul{margin:4px 0;padding-left:1.4em}
+.report li{margin:3px 0}
+.report .safety{background:var(--hv-soft);border-left:4px solid var(--hv);padding:9px 13px;border-radius:0 6px 6px 0}
+.report .refs{font-size:13px;color:var(--muted)}
+.report-title{display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;font-size:18px;font-weight:700;margin:4px 0}
+
+.case{padding:10px 0;border-bottom:1px solid #EEF1F4;font-size:14px}
+.case-meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.case-meta .src-c{color:var(--green);font-weight:600}
+.case-text{margin:3px 0}
+.case-fix{color:#34465E}
+.case-fix b{font-weight:600}
+.sim{font-family:var(--num);font-size:13px;color:var(--steel)}
+
+.confirm{margin-top:26px;padding:16px 18px;background:var(--bg);border-radius:8px}
+.confirm h3{margin:0 0 4px;font-size:15px}
+.confirm p{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.confirm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.confirm-grid .full{grid-column:1/-1}
+.confirm select,.confirm input{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:5px;background:#fff}
+.confirm .btn{margin-top:10px}
+.confirm .done{background:var(--green)}
+@media (max-width:600px){.confirm-grid{grid-template-columns:1fr}}
+
+/* 故障库 */
+.view-lib{display:grid;grid-template-columns:300px 1fr;gap:28px}
+@media (max-width:960px){.view-lib{grid-template-columns:1fr}}
+.search{width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:6px;background:#fff;margin-bottom:12px}
+.lib-list h3{font-size:13px;color:var(--muted);margin:14px 0 4px;font-weight:600}
+.lib-list button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;background:none;border:0;padding:6px 10px;border-radius:5px;cursor:pointer;font-size:14px}
+.lib-list button:hover{background:#DDE3E8}
+.lib-list button[aria-current="true"]{background:var(--ink);color:#fff}
+.lib-list button span{font-family:var(--num);color:var(--muted);font-size:13px}
+.lib-list button[aria-current="true"] span{color:#C5D0E0}
+.lib-detail h2{font-size:24px;margin:0 0 4px}
+.lib-detail .kw{color:var(--muted);font-size:13px}
+
+/* 案例 */
+.view-cases .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.view-cases .filters .search{flex:1;min-width:220px;margin:0}
+.view-cases .filters select{padding:9px 10px;border:1.5px solid var(--line);border-radius:6px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:13px;color:var(--muted);font-weight:600;border-bottom:2px solid var(--ink);padding:6px 8px}
+td{border-bottom:1px solid #E3E8EC;padding:8px;vertical-align:top}
+td.num{font-family:var(--num);white-space:nowrap;color:var(--muted)}
+.cur{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px}
+.ai{margin-top:24px;border:1.5px dashed #AEB9C4;border-radius:8px;padding:14px 18px}
+.ai-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ai-head b{font-size:15px}
+.ai-head small{color:var(--muted);font-size:12px;display:block;font-weight:400}
+.ai-body{margin-top:8px;max-width:46em}
+.ai-body h3{font-size:15px;margin:14px 0 4px}
+.ai-body p{margin:4px 0}
+.ai-body ol,.ai-body ul{margin:4px 0;padding-left:1.4em}
+.ai-body .cite{font-size:12px;color:var(--green);background:#E6F2EA;border-radius:3px;padding:0 4px}
+.ai-body blockquote{margin:8px 0;padding:4px 10px;border-left:3px solid var(--line);color:var(--muted);font-size:13px}
+.cursor{display:inline-block;width:7px;height:1em;background:var(--steel);vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.photo-row{display:flex;gap:10px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.photo-note{margin-top:8px;font-size:13px;padding:8px 12px;background:#F4F7FC;border-left:3px solid var(--steel);border-radius:0 6px 6px 0}
+.llm-chip{font-size:12px;padding:1px 8px;border-radius:10px;background:var(--bg);color:var(--muted);margin-left:10px}
+.llm-chip.on{background:#DDF0E4;color:var(--green)}
+button.llm-chip{border:0;cursor:pointer}
+button.llm-chip:hover{outline:1.5px solid currentColor}
+dialog{border:0;border-radius:10px;padding:0;width:min(520px,94vw);box-shadow:0 20px 60px rgba(21,36,59,.3);color:var(--ink)}
+dialog::backdrop{background:rgba(21,36,59,.45)}
+.dlg{padding:22px 24px}
+.dlg h2{margin:0 0 4px;font-size:18px}
+.dlg > p{margin:0 0 14px;font-size:13px;color:var(--muted)}
+.dlg label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+.dlg label small{font-weight:400;color:var(--muted);margin-left:6px}
+.dlg input,.dlg select{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:5px;background:#fff}
+.dlg .row{display:flex;gap:8px;align-items:center}
+.dlg .row input{flex:1}
+.dlg .presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.dlg .presets button{font-size:12px;padding:3px 10px}
+.dlg .foot{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:20px;flex-wrap:wrap}
+.dlg .foot .msg{margin-right:auto;font-size:13px}
+.dlg .msg.ok{color:var(--green)}
+.dlg .msg.err{color:var(--red)}
+.dlg .test{margin-top:14px;font-size:13px;border-top:1px solid var(--line);padding-top:10px}
+.dlg .test div{display:grid;grid-template-columns:70px 1fr;gap:8px;padding:2px 0}
+.dlg .test .ok{color:var(--green)} .dlg .test .bad{color:var(--red)}
+.dlg .test small{color:var(--muted)}
+.dlg .envnote{font-size:12px;color:var(--amber);background:#FBEFD9;padding:6px 10px;border-radius:5px}
+@media (prefers-reduced-motion:reduce){.bar > div{transition:none}.cursor{animation:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>电诊</b><span>EV-Doctor</span></div>
+  <nav role="tablist" aria-label="页面">
+    <button role="tab" data-view="diag" aria-selected="true">诊断</button>
+    <button role="tab" data-view="lib" aria-selected="false">故障库</button>
+    <button role="tab" data-view="cases" aria-selected="false">维修案例</button>
+  </nav>
+  <div class="stats" id="stats"></div>
+</header>
+
+<main>
+  <!-- 诊断 -->
+  <div class="view-diag" id="view-diag">
+    <section>
+      <h1>车出了什么毛病？</h1>
+      <p class="lead">写下故障现象或故障码；有诊断仪的话，再录几项数据流会准得多。</p>
+      <label for="q" class="sr">故障描述</label>
+      <textarea id="q" placeholder="例如：早上按启动，仪表亮了但 READY 一直不出来，诊断仪读到 P0A0A"></textarea>
+      <div class="photo-row" id="photo-row" hidden>
+        <button class="btn btn-line" id="photo">拍诊断仪 / 仪表盘</button>
+        <span>自动识别读数和故障码，填进下面的表单</span>
+        <input id="file" type="file" accept="image/*" capture="environment" hidden>
+      </div>
+      <div class="photo-note" id="photo-note" hidden></div>
+
+      <details class="measure" id="measure">
+        <summary>录入数据流 <span class="m-count" id="m-count"></span></summary>
+        <div class="m-body">
+          <div class="m-demo">填入示例：
+            <button class="btn btn-line" data-demo="a">绝缘故障</button>
+            <button class="btn btn-line" data-demo="b">DC-DC 故障</button>
+            <button class="btn btn-line" data-demo="c">交流充不进</button>
+          </div>
+          <div id="m-form"></div>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button id="go" class="btn btn-main">开始诊断</button>
+        <button id="reset" class="link">重新开始</button>
+      </div>
+      <div id="hint" class="hint">按 Ctrl + Enter 也能开始诊断</div>
+
+      <div class="samples">
+        <h2>试试这些真实场景</h2>
+        <div id="samples"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel" aria-live="polite">
+      <div class="empty">
+        <strong>诊断结果会显示在这里</strong>
+        <p>系统先根据描述和数据流算出各类故障的概率，每条判断都标明依据的国标或经验。</p>
+        <p>还分不清的时候，它会一次只问你一个最关键的问题。</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- 故障库 -->
+  <div class="view-lib" id="view-lib" hidden>
+    <aside>
+      <label for="lib-q" class="sr">搜索故障</label>
+      <input id="lib-q" class="search" placeholder="搜故障名、关键词或故障码">
+      <div class="lib-list" id="lib-list"></div>
+    </aside>
+    <section class="panel lib-detail" id="lib-detail"><div class="empty"><strong>从左侧选一个故障</strong></div></section>
+  </div>
+
+  <!-- 维修案例 -->
+  <div class="view-cases" id="view-cases" hidden>
+    <section class="panel">
+      <section class="block" style="margin-top:0">
+        <h3>近期诊断记录</h3>
+        <div id="history"></div>
+      </section>
+      <section class="block">
+        <h3>维修案例库</h3>
+        <div class="filters">
+          <label for="case-q" class="sr">搜索案例</label>
+          <input id="case-q" class="search" placeholder="搜描述、处理措施或车型">
+          <label for="case-f" class="sr">故障类别</label>
+          <select id="case-f"><option value="">全部故障</option></select>
+        </div>
+        <div id="cases"></div>
+      </section>
+    </section>
+  </div>
+</main>
+
+<dialog id="dlg">
+  <form class="dlg" method="dialog" id="set-form">
+    <h2>大模型接口（可选）</h2>
+    <p>只用于"大白话解释"和"拍照识别"。不填也能正常诊断，诊断结论不受影响。key 只保存在本机的 config.json 里。</p>
+    <div class="envnote" id="set-env" hidden>当前用环境变量配置，环境变量会覆盖这里的设置。</div>
+    <label for="set-base">接口地址<small>OpenAI 兼容格式，一般以 /v1 结尾</small></label>
+    <input id="set-base" placeholder="https://api.deepseek.com/v1" autocomplete="off" spellcheck="false">
+    <div class="presets">
+      <button type="button" class="btn btn-line" data-preset="https://api.deepseek.com/v1|deepseek-chat">DeepSeek</button>
+      <button type="button" class="btn btn-line" data-preset="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-plus|qwen-vl-max">通义千问</button>
+      <button type="button" class="btn btn-line" data-preset="https://open.bigmodel.cn/api/paas/v4|glm-4-flash|glm-4v-flash">智谱 GLM</button>
+      <button type="button" class="btn btn-line" data-preset="https://api.openai.com/v1|gpt-4o-mini|gpt-4o-mini">OpenAI</button>
+    </div>
+    <label for="set-key">API Key<small id="set-key-state"></small></label>
+    <div class="row">
+      <input id="set-key" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
+      <button type="button" class="btn btn-line" id="set-show">显示</button>
+    </div>
+    <label for="set-model">模型名<small id="set-models-state"></small></label>
+    <div class="row">
+      <input id="set-model" list="model-list" placeholder="deepseek-chat" autocomplete="off" spellcheck="false">
+      <button type="button" class="btn btn-line" id="set-fetch">获取模型</button>
+    </div>
+    <label for="set-vmodel">看图模型<small>拍照识别用，可留空；留空就用上面的模型</small></label>
+    <input id="set-vmodel" list="vmodel-list" placeholder="qwen-vl-max" autocomplete="off" spellcheck="false">
+    <datalist id="model-list"></datalist><datalist id="vmodel-list"></datalist>
+    <div class="test" id="set-test-out" hidden></div>
+    <div class="foot">
+      <span class="msg" id="set-msg" role="status"></span>
+      <button type="button" class="link" id="set-clear">清除 key</button>
+      <button type="button" class="btn btn-line" id="set-test">测试连接</button>
+      <button type="button" class="btn btn-line" id="set-cancel">关闭</button>
+      <button type="submit" class="btn btn-main" id="set-save">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const SAMPLES = [
+  "早上按启动，仪表亮了但 READY 一直不出来，诊断仪读到 P0A0A，前两天刚换过空调压缩机",
+  "梅雨天停了一晚，第二天仪表报绝缘故障，车子上不了高压，太阳出来又好了",
+  "国标直流桩插上枪一直转圈，最后提示车辆通信失败，家里交流充电正常",
+  "车在地库放了半个月，遥控钥匙没反应，仪表全黑，动力电池还有 70% 的电",
+  "三伏天跑高速，仪表弹出电机过热请减速，动力明显变弱",
+  "车上不了高压，仪表报动力系统故障",
+];
+const DEMOS = {
+  a: {text: "下雨后车上不了高压，仪表报绝缘故障", m: {pack_voltage: 380, insulation_kohm: 25, hvil_state: "closed"}},
+  b: {text: "", m: {lv_voltage_off: 12.1, lv_voltage_ready: 12.3}},
+  c: {text: "家用交流桩插上枪没反应，充不进电", m: {ac_cp_v: 9, ac_cc_ohm: 680}},
+};
+
+const $ = s => document.querySelector(s);
+// 部署到服务器后，远程改"设置"需要管理口令：在浏览器控制台执行 localStorage.evdocAdmin='口令'
+const adminHeaders = path => { let t = null; try { t = path.startsWith("/api/settings") ? localStorage.getItem("evdocAdmin") : null; } catch {} return t ? {"X-Admin-Token": t} : {}; };
+const api = async (path, body) => {
+  const h = {...adminHeaders(path), ...(body ? {"Content-Type": "application/json"} : {})};
+  const r = await fetch(path, body ? {method: "POST", headers: h, body: JSON.stringify(body)} : {headers: h});
+  let d; try { d = await r.json(); } catch { throw new Error(`服务器返回异常（${r.status}）`); }
+  if (!r.ok) throw new Error(d.error || `请求失败（${r.status}）`);
+  return d;
+};
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const pct = p => { const v = p * 100; return v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : "<1"; };
+const day = s => (s || "").slice(0, 10);
+
+let PARAMS = [], FAULTS = [], state = {answers: {}}, last = null, busy = false, INFO = {};
+
+/* ---------------- 初始化 ---------------- */
+async function boot() {
+  try {
+    [PARAMS, FAULTS] = await Promise.all([api("/api/params"), api("/api/faults")]);
+  } catch (e) { setHint("连不上后端，请确认 server.py 正在运行", true); return; }
+  buildMeasureForm();
+  $("#case-f").innerHTML += FAULTS.map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join("");
+  refreshStats();
+}
+async function refreshStats() {
+  const d = await api("/api/info").catch(() => null);
+  if (!d) return;
+  INFO = d;
+  $("#stats").innerHTML = `知识库<b>${d.fault_count}</b>类　规则<b>${d.rule_count}</b>条　追问<b>${d.question_count}</b>个　案例<b>${d.case_count}</b>条`
+    + `<button class="llm-chip ${d.llm_ready ? "on" : ""}" id="open-set" title="${d.llm_ready ? "已接入大模型：" + esc(d.llm_model) + "（只用于解释和拍照识别，不参与判断）。点击修改" : "未配置大模型，所有诊断在本地完成。点击填写接口"}">${d.llm_ready ? "大模型已接入" : "纯本地 · 设置接口"}</button>`;
+  $("#photo-row").hidden = !d.llm_ready;
+}
+
+/* ---------------- 标签切换 ---------------- */
+document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x === b));
+  ["diag", "lib", "cases"].forEach(v => $("#view-" + v).hidden = v !== b.dataset.view);
+  if (b.dataset.view === "lib") loadLib();
+  if (b.dataset.view === "cases") { loadHistory(); loadCases(); }
+}));
+
+/* ---------------- 数据流表单 ---------------- */
+function buildMeasureForm() {
+  const groups = {};
+  PARAMS.forEach(p => (groups[p.group] ||= []).push(p));
+  $("#m-form").innerHTML = Object.entries(groups).map(([g, ps]) => `
+    <div class="m-group"><h3>${esc(g)}</h3>${ps.map(p => `
+      <div class="m-row" title="${esc(p.hint)}；正常：${esc(p.normal)}">
+        <label for="m-${p.id}">${esc(p.name)}<small>${esc(p.normal)}</small></label>
+        ${p.type === "enum"
+          ? `<select id="m-${p.id}" data-p="${p.id}"><option value="">未测</option>${p.options.map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join("")}</select>`
+          : `<input id="m-${p.id}" data-p="${p.id}" type="number" step="any" inputmode="decimal">`}
+        <span class="u">${esc(p.unit)}</span>
+      </div>`).join("")}</div>`).join("");
+  $("#m-form").addEventListener("input", markFilled);
+}
+function readMeasure() {
+  const m = {};
+  document.querySelectorAll("[data-p]").forEach(el => { if (el.value !== "") m[el.dataset.p] = el.type === "number" ? Number(el.value) : el.value; });
+  return m;
+}
+function markFilled() {
+  let n = 0;
+  document.querySelectorAll("[data-p]").forEach(el => { const f = el.value !== ""; el.closest(".m-row").classList.toggle("filled", f); n += f; });
+  $("#m-count").textContent = n ? `已填 ${n} 项` : "";
+}
+function setMeasure(m) {
+  document.querySelectorAll("[data-p]").forEach(el => el.value = m[el.dataset.p] ?? "");
+  markFilled();
+}
+document.querySelectorAll("[data-demo]").forEach(b => b.addEventListener("click", () => {
+  const d = DEMOS[b.dataset.demo];
+  $("#q").value = d.text; setMeasure(d.m); state.answers = {}; diagnose();
+}));
+
+/* ---------------- 示例与按钮 ---------------- */
+$("#samples").innerHTML = SAMPLES.map((s, i) => `<button class="sample" data-i="${i}">${esc(s)}</button>`).join("");
+$("#samples").addEventListener("click", e => {
+  const b = e.target.closest(".sample"); if (!b) return;
+  $("#q").value = SAMPLES[b.dataset.i]; setMeasure({}); state.answers = {}; diagnose();
+});
+$("#go").addEventListener("click", () => { state.answers = {}; diagnose(); });
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { state.answers = {}; diagnose(); } });
+$("#reset").addEventListener("click", () => {
+  $("#q").value = ""; setMeasure({}); state.answers = {}; last = null; setHint("");
+  $("#panel").innerHTML = `<div class="empty"><strong>已清空</strong><p>写下新的故障现象开始诊断。</p></div>`;
+  $("#q").focus();
+});
+function setHint(t, err) { $("#hint").textContent = t; $("#hint").classList.toggle("err", !!err); }
+
+/* ---------------- 诊断 ---------------- */
+async function diagnose() {
+  if (busy) return;
+  const text = $("#q").value.trim(), measurements = readMeasure();
+  if (!text && !Object.keys(measurements).length) { setHint("先写一句故障描述，或者录入至少一项数据流", true); $("#q").focus(); return; }
+  busy = true; $("#go").disabled = true; setHint("");
+  try {
+    last = await api("/api/diagnose", {text, measurements, answers: state.answers});
+    render(last);
+    refreshStats();
+  } catch (e) { setHint(e.message, true); }
+  finally { busy = false; $("#go").disabled = false; }
+}
+
+function render(d) {
+  const c = d.candidates.slice(0, 3), r = d.report;
+  const support = d.evidence.filter(e => e.effect !== "refute"), refute = d.evidence.filter(e => e.effect === "refute");
+  $("#panel").innerHTML = `
+    <div class="rank-head"><h2>最可能的故障</h2><div class="speed">用时 <b>${d.ms.toFixed(1)}</b> ms</div></div>
+    ${c.map(x => `
+      <div class="cand ${x.prob < 0.05 ? "minor" : ""}">
+        <div class="cand-name">${esc(x.name)}<em>${esc(x.system)}</em>${x.hv_risk ? `<span class="tag hv">涉及高压</span>` : ""}</div>
+        <div class="cand-pct">${pct(x.prob)}<small>%</small></div>
+        <div class="bar"><div data-w="${Math.max(x.prob * 100, 0.6)}"></div></div>
+      </div>`).join("")}
+
+    ${d.next_question ? `
+      <div class="ask">
+        <div class="ask-sub">还需要确认一件事</div>
+        <div class="ask-q">${esc(d.next_question.text)}</div>
+        <div class="ask-opts">
+          ${d.next_question.answers.map(a => `<button data-q="${d.next_question.id}" data-a="${esc(a.key)}">${esc(a.label)}</button>`).join("")}
+          <button class="unk" data-q="${d.next_question.id}" data-a="unknown">不确定</button>
+        </div>
+        ${answeredHtml(d)}
+      </div>` : d.answered.length ? `<div class="answered" style="margin-top:14px">${answeredRows(d)}</div>` : ""}
+
+    ${d.suggest_measure?.length ? `
+      <div class="measure-tip">要进一步区分，建议测一下：
+        <ul>${d.suggest_measure.map(s => `<li><b>${esc(s.name)}</b>　<small>${esc(s.hint)}，用来判断是否「${esc(s.for)}」</small></li>`).join("")}</ul>
+      </div>` : ""}
+
+    ${r.hv_risk ? `<div class="hv-band">${HV_ICON}<div><b>排查会接触高压部件。</b>非专业人员请不要自行拆修，交给持证技师按维修手册操作。</div></div>` : ""}
+
+    <section class="block">
+      <h3>判断依据</h3>
+      ${d.evidence.length ? `<ul class="ev">${[...support, ...refute].map(evHtml).join("")}</ul>` : `<p class="ask-sub">只根据描述做了初判。录入数据流或回答上面的问题，依据会更充分。</p>`}
+      ${Object.values(d.derived || {}).length ? `<div class="derived">换算值：${Object.values(d.derived).map(v => `${esc(v.name)} <b>${v.value}</b> ${esc(v.unit)}`).join("　")}</div>` : ""}
+    </section>
+
+    <section class="block report">
+      <h3>诊断报告</h3>
+      <div class="report-title">${esc(r.name)}<span class="tag conf-${r.confidence}">置信度${r.confidence}</span></div>
+      <h4>典型现象</h4><p>${esc(r.symptoms)}</p>
+      <h4>常见成因</h4><ul>${r.causes.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+      <h4>排查步骤</h4><ol>${r.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      <h4>安全提示</h4><p class="safety">${esc(r.safety)}</p>
+      ${r.refs.length ? `<h4>参考依据</h4><p class="refs">${r.refs.map(esc).join("<br>")}</p>` : ""}
+    </section>
+
+    ${INFO.llm_ready ? `
+      <div class="ai" id="ai">
+        <div class="ai-head"><div><b>用大白话讲给车主听</b><small>由 ${esc(INFO.llm_model)} 根据上面的结论和依据生成，不改变诊断结论</small></div>
+          <button class="btn btn-line" id="ai-go">生成解释</button></div>
+        <div class="ai-body" id="ai-body"></div>
+      </div>` : ""}
+
+    ${d.similar_cases.length ? `
+      <section class="block">
+        <h3>相似维修案例</h3>
+        ${d.similar_cases.map(caseHtml).join("")}
+      </section>` : ""}
+
+    <div class="confirm" id="confirm">
+      <h3>修好了？确认最终故障</h3>
+      <p>确认后这次诊断会存进案例库，以后遇到相似描述会认得更准。</p>
+      <div class="confirm-grid">
+        <div class="full"><label class="sr" for="cf-fault">最终故障</label>
+          <select id="cf-fault">${FAULTS.map(f => `<option value="${f.id}" ${f.id === r.fault_id ? "selected" : ""}>${esc(f.name)}</option>`).join("")}</select></div>
+        <div class="full"><label class="sr" for="cf-fix">处理措施</label><input id="cf-fix" placeholder="处理措施，例如：更换电池包下壳体密封条，绝缘恢复到 2 MΩ"></div>
+        <div><label class="sr" for="cf-car">车辆</label><input id="cf-car" placeholder="车辆（可选）"></div>
+        ${$("#q").value.trim() ? "" : `<div><label class="sr" for="cf-text">故障现象</label><input id="cf-text" placeholder="补一句故障现象（必填）"></div>`}
+      </div>
+      <button class="btn btn-main" id="cf-go">确认并存入案例库</button>
+      <span class="hint" id="cf-hint"></span>
+    </div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    $("#panel").querySelectorAll(".bar > div").forEach(b => b.style.width = b.dataset.w + "%")));
+}
+const answeredRows = d => d.answered.map(a => `<div>问：${esc(a.text)}　答：<b>${esc(a.answer_label)}</b><button data-undo="${a.id}" aria-label="撤销这个回答" title="撤销">×</button></div>`).join("");
+const answeredHtml = d => d.answered.length ? `<div class="answered">${answeredRows(d)}</div>` : "";
+const evHtml = e => `<li class="${e.level}"><div>${esc(e.text)}${e.effect === "refute" ? `<span class="ref">排除</span>` : ""}${e.source ? `<span class="src">依据：${esc(e.source)}</span>` : ""}</div></li>`;
+const caseHtml = c => `
+  <div class="case">
+    <div class="case-meta"><span>${esc(day(c.created_at))}</span><span>${esc(c.fault_name)}</span><span>${esc(c.vehicle)}</span>
+      <span class="${c.source === "confirmed" ? "src-c" : ""}">${c.source === "confirmed" ? "本店确认" : "案例库"}</span>
+      ${c.sim != null ? `<span class="sim">相似度 ${(c.sim * 100).toFixed(0)}%</span>` : ""}</div>
+    <div class="case-text">${esc(c.text)}</div>
+    ${c.resolution ? `<div class="case-fix"><b>处理：</b>${esc(c.resolution)}</div>` : ""}
+  </div>`;
+
+$("#panel").addEventListener("click", async e => {
+  const a = e.target.closest("[data-a]"), u = e.target.closest("[data-undo]");
+  if (a) { state.answers[a.dataset.q] = a.dataset.a; return diagnose(); }
+  if (u) { delete state.answers[u.dataset.undo]; return diagnose(); }
+  if (e.target.id === "cf-go") confirmFault(e.target);
+  if (e.target.id === "ai-go") explain(e.target);
+});
+
+async function confirmFault(btn) {
+  const text = $("#cf-text") ? $("#cf-text").value.trim() : undefined;
+  if ($("#cf-text") && !text) { $("#cf-hint").textContent = "请补一句故障现象"; $("#cf-text").focus(); return; }
+  btn.disabled = true;
+  try {
+    const d = await api("/api/confirm", {diagnosis_id: last.diagnosis_id, fault_id: $("#cf-fault").value,
+      resolution: $("#cf-fix").value, vehicle: $("#cf-car").value, text});
+    btn.textContent = `已存入，第 ${d.case_count} 条案例`; btn.classList.add("done");
+    $("#cf-hint").textContent = "";
+    refreshStats();
+  } catch (err) { btn.disabled = false; $("#cf-hint").textContent = err.message; }
+}
+
+/* ---------------- 大模型：解释（可选） ---------------- */
+async function explain(btn) {
+  const box = $("#ai-body"), id = last.diagnosis_id;
+  btn.disabled = true; btn.textContent = "生成中…";
+  box.innerHTML = '<span class="cursor"></span>';
+  try {
+    const r = await fetch("/api/explain", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({diagnosis_id: id})});
+    if (!r.ok) { let m = `请求失败（${r.status}）`; try { m = (await r.json()).error || m; } catch {} throw new Error(m); }
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    let md = "";
+    for (;;) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      md += dec.decode(value, {stream: true});
+      if (last.diagnosis_id !== id) return;          // 用户已经开始新的诊断
+      box.innerHTML = renderMd(md) + '<span class="cursor"></span>';
+    }
+    box.innerHTML = renderMd(md) || '<p class="ask-sub">模型没有返回内容，再试一次。</p>';
+    btn.textContent = "重新生成";
+  } catch (err) {
+    box.innerHTML = `<p class="hint err">${esc(err.message)}。诊断结果不受影响。</p>`;
+    btn.textContent = "重试";
+  } finally { btn.disabled = false; }
+}
+function renderMd(src) {
+  let html = "", list = null;
+  const close = () => { if (list) { html += `</${list}>`; list = null; } };
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/【依据：(.+?)】/g, '<span class="cite">依据：$1</span>');
+  for (const raw of src.replace(/\r/g, "").split("\n")) {
+    const l = raw.trim(); let m;
+    if (!l) { close(); continue; }
+    if ((m = l.match(/^#{1,4}\s+(.*)/))) { close(); html += `<h3>${inline(m[1])}</h3>`; continue; }
+    if ((m = l.match(/^\d+[.、)]\s*(.*)/))) { if (list !== "ol") { close(); html += "<ol>"; list = "ol"; } html += `<li>${inline(m[1])}</li>`; continue; }
+    if ((m = l.match(/^[-*•]\s+(.*)/))) { if (list !== "ul") { close(); html += "<ul>"; list = "ul"; } html += `<li>${inline(m[1])}</li>`; continue; }
+    close();
+    if ((m = l.match(/^>\s?(.*)/))) { html += `<blockquote>${inline(m[1])}</blockquote>`; continue; }
+    html += `<p>${inline(l)}</p>`;
+  }
+  close();
+  return html;
+}
+
+/* ---------------- 大模型：拍照识别（可选） ---------------- */
+$("#photo").addEventListener("click", () => $("#file").click());
+$("#file").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const note = $("#photo-note"), btn = $("#photo");
+  btn.disabled = true; btn.textContent = "识别中…"; note.hidden = true;
+  try {
+    const d = await api("/api/vision", {image: await shrink(f, 1600)});
+    const names = Object.fromEntries(PARAMS.map(p => [p.id, p]));
+    const got = Object.entries(d.measurements);
+    if (d.description || d.dtc.length) {
+      const add = [d.description, d.dtc.length ? "故障码 " + d.dtc.join("、") : ""].filter(Boolean).join("，");
+      $("#q").value = $("#q").value.trim() ? $("#q").value.trim() + "；" + add : add;
+    }
+    if (got.length) { setMeasure({...readMeasure(), ...d.measurements}); $("#measure").open = true; }
+    note.innerHTML = `识别到：${got.length ? got.map(([k, v]) => `${esc(names[k].name)} <b>${esc(v)}</b>${esc(names[k].unit)}`).join("，") : "没有可用的数据流读数"}`
+      + `${d.dtc.length ? "；故障码 " + d.dtc.map(esc).join("、") : ""}。<br><small>请核对一遍再诊断，识别可能有误。</small>`;
+    note.hidden = false;
+  } catch (err) {
+    note.innerHTML = `<span style="color:var(--red)">${esc(err.message)}</span>，可以手动录入。`; note.hidden = false;
+  } finally { btn.disabled = false; btn.textContent = "拍诊断仪 / 仪表盘"; }
+});
+function shrink(file, max) {
+  return new Promise((ok, bad) => {
+    const img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement("canvas");
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      ok(c.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = () => bad(new Error("图片读不出来，换一张试试"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+/* ---------------- 设置 ---------------- */
+const dlg = $("#dlg");
+$("#stats").addEventListener("click", e => { if (e.target.id === "open-set") openSettings(); });
+async function openSettings() {
+  let c;
+  try { c = await api("/api/settings"); }
+  catch (e) { setHint(e.message.includes("只能在") ? "远程修改设置需要管理口令：在浏览器控制台执行 localStorage.evdocAdmin='部署时打印的口令' 后刷新" : e.message, true); return; }
+  $("#set-base").value = c.api_base; $("#set-model").value = c.model; $("#set-vmodel").value = c.vision_model;
+  $("#set-key").value = ""; $("#set-key").type = "password"; $("#set-show").textContent = "显示";
+  $("#set-key").placeholder = c.key_set ? "已保存，不改就留空" : "sk-...";
+  $("#set-key-state").textContent = c.key_set ? `已保存 ${c.key_masked}` : "未填写";
+  $("#set-env").hidden = !c.from_env;
+  setMsg(""); $("#set-test-out").hidden = true; $("#set-models-state").textContent = "";
+  dlg.showModal();
+  ($("#set-base").value ? $("#set-key") : $("#set-base")).focus();
+}
+const setMsg = (t, cls) => { const m = $("#set-msg"); m.textContent = t; m.className = "msg " + (cls || ""); };
+const formData = () => ({api_base: $("#set-base").value, api_key: $("#set-key").value, model: $("#set-model").value, vision_model: $("#set-vmodel").value});
+async function saveSettings() {
+  const c = await api("/api/settings", formData());
+  $("#set-key").value = ""; $("#set-key").placeholder = c.key_set ? "已保存，不改就留空" : "sk-...";
+  $("#set-key-state").textContent = c.key_set ? `已保存 ${c.key_masked}` : "未填写";
+  await refreshStats();
+  if (last) render(last);   // 让解释区按新配置出现或消失
+  return c;
+}
+$("#set-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  try { const c = await saveSettings(); setMsg(c.ready ? "已保存" : "已保存，但还没填全，暂时是纯本地模式", c.ready ? "ok" : ""); }
+  catch (err) { setMsg(err.message, "err"); }
+});
+$("#set-test").addEventListener("click", async () => {
+  const b = $("#set-test"), out = $("#set-test-out"); b.disabled = true; setMsg("正在连接…"); out.hidden = true;
+  try {
+    const r = await api("/api/settings/test", formData());   // 先测，测通再存
+    const row = (label, x) => x ? `<div><span>${label}</span><span class="${x.ok ? "ok" : "bad"}">${x.ok
+      ? `✓ ${esc(x.model)} 可用 <small>${x.ms} ms，回复“${esc(x.reply)}”</small>`
+      : `✗ ${esc(x.model)}：${esc(x.error)}`}</span></div>` : "";
+    out.innerHTML = row("解释功能", r.text) + row("拍照识别", r.vision); out.hidden = false;
+    if (r.text.fixed_base) $("#set-base").value = r.text.fixed_base;   // 自动补了 /v1
+    if (r.text.ok) { await saveSettings(); setMsg(r.text.fixed_base ? `连接成功，地址已自动补上 /v1 并保存` : "连接成功，已保存", "ok"); }
+    else setMsg("文字模型不通，没有保存", "err");
+  } catch (err) { setMsg(err.message, "err"); }
+  finally { b.disabled = false; }
+});
+const VISION_HINT = /vl|vision|4o|4v|omni|gemini|claude|qvq|-v-|pixtral|llava|glm-4\.?\dv/i;
+$("#set-fetch").addEventListener("click", async () => {
+  const b = $("#set-fetch"); b.disabled = true; b.textContent = "获取中…"; setMsg("");
+  try {
+    const {models} = await api("/api/settings/models", formData());
+    const opt = m => `<option value="${esc(m)}">`;
+    const chat = models.filter(m => !/embed|whisper|tts|dall|rerank|moderation|audio|image-|speech/i.test(m));
+    const vis = chat.filter(m => VISION_HINT.test(m));
+    $("#model-list").innerHTML = chat.map(opt).join("");
+    $("#vmodel-list").innerHTML = (vis.length ? vis : chat).map(opt).join("");
+    $("#set-models-state").textContent = `找到 ${chat.length} 个，点输入框选择${vis.length ? `；其中 ${vis.length} 个可能能看图` : ""}`;
+    if (!$("#set-model").value && chat.length) $("#set-model").value = chat[0];
+    $("#set-model").focus();
+    setMsg("已获取模型列表", "ok");
+  } catch (err) { setMsg(err.message, "err"); }
+  finally { b.disabled = false; b.textContent = "获取模型"; }
+});
+$("#set-clear").addEventListener("click", async () => {
+  try { await api("/api/settings/clear-key", {}); await refreshStats(); if (last) render(last);
+    $("#set-key-state").textContent = "未填写"; $("#set-key").placeholder = "sk-..."; setMsg("key 已清除，现在是纯本地模式", "ok"); }
+  catch (err) { setMsg(err.message, "err"); }
+});
+$("#set-cancel").addEventListener("click", () => dlg.close());
+$("#set-show").addEventListener("click", () => {
+  const k = $("#set-key"), show = k.type === "password";
+  k.type = show ? "text" : "password"; $("#set-show").textContent = show ? "隐藏" : "显示";
+});
+document.querySelectorAll("[data-preset]").forEach(b => b.addEventListener("click", () => {
+  const [base, model, vmodel] = b.dataset.preset.split("|");
+  $("#set-base").value = base; $("#set-model").value = model; $("#set-vmodel").value = vmodel || "";
+  setMsg("已填入地址和模型名，再填上 key 就行");
+  $("#set-key").focus();
+}));
+
+/* ---------------- 故障库 ---------------- */
+let libSel = null;
+async function loadLib() {
+  FAULTS = await api("/api/faults");
+  renderLibList();
+  if (!libSel) showFault(FAULTS[0].id);
+}
+function renderLibList() {
+  const k = $("#lib-q").value.trim().toLowerCase();
+  const hit = f => !k || [f.name, ...f.keywords, ...f.dtc].some(s => s.toLowerCase().includes(k));
+  const groups = {};
+  FAULTS.filter(hit).forEach(f => (groups[f.system] ||= []).push(f));
+  $("#lib-list").innerHTML = Object.entries(groups).map(([g, fs]) => `<h3>${esc(g)}</h3>` +
+    fs.map(f => `<button data-f="${f.id}" aria-current="${f.id === libSel}">${esc(f.name)}<span>${f.case_count}</span></button>`).join("")).join("")
+    || `<p class="ask-sub">没有匹配的故障</p>`;
+}
+$("#lib-q").addEventListener("input", renderLibList);
+$("#lib-list").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b) showFault(b.dataset.f); });
+async function showFault(id) {
+  libSel = id; renderLibList();
+  const f = await api("/api/faults/" + id);
+  const sev = {high: "严重", medium: "中等", low: "轻微"}[f.severity];
+  $("#lib-detail").innerHTML = `
+    <h2>${esc(f.name)}</h2>
+    <div class="case-meta"><span>${esc(f.system)}</span><span>严重程度：${sev}</span>${f.hv_risk ? `<span class="tag hv" style="margin:0">涉及高压</span>` : ""}</div>
+    <div style="margin:10px 0 4px">${f.dtc.length ? f.dtc.map(c => `<span class="tag dtc">${esc(c)}</span>`).join("") : `<span class="ask-sub">无通用故障码，查对应车型手册</span>`}</div>
+    <p class="kw">常见说法：${f.keywords.map(esc).join("、")}</p>
+    <div class="report">
+      <h4>典型现象</h4><p>${esc(f.symptoms)}</p>
+      <h4>常见成因</h4><ul>${f.causes.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+      <h4>排查步骤</h4><ol>${f.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      <h4>安全提示</h4><p class="safety">${esc(f.safety)}</p>
+      ${f.refs.length ? `<h4>参考依据</h4><p class="refs">${f.refs.map(esc).join("<br>")}</p>` : ""}
+    </div>
+    <section class="block"><h3>维修案例（${f.cases.length}）</h3>${f.cases.map(caseHtml).join("") || `<p class="ask-sub">还没有案例</p>`}</section>`;
+}
+
+/* ---------------- 维修案例 ---------------- */
+let caseTimer;
+$("#case-q").addEventListener("input", () => { clearTimeout(caseTimer); caseTimer = setTimeout(loadCases, 300); });
+$("#case-f").addEventListener("change", loadCases);
+async function loadCases() {
+  const q = encodeURIComponent($("#case-q").value.trim()), f = $("#case-f").value;
+  const rows = await api(`/api/cases?q=${q}&fault_id=${f}&limit=200`).catch(() => []);
+  $("#cases").innerHTML = rows.length ? `<p class="ask-sub">共 ${rows.length} 条</p>` + rows.map(caseHtml).join("") : `<p class="ask-sub">没有找到符合条件的案例</p>`;
+}
+async function loadHistory() {
+  const rows = await api("/api/history?limit=15").catch(() => []);
+  $("#history").innerHTML = rows.length ? `
+    <table><thead><tr><th>时间</th><th>描述</th><th>初判</th><th>确认结果</th></tr></thead><tbody>
+    ${rows.map(h => `<tr>
+      <td class="num">${esc(h.created_at.slice(5, 16))}</td>
+      <td>${esc(h.text ? (h.text.length > 34 ? h.text.slice(0, 34) + "…" : h.text) : "（仅数据流）")}
+        ${h.n_measurements ? `<span class="tag">数据流 ${h.n_measurements} 项</span>` : ""}${h.n_answers ? `<span class="tag">追问 ${h.n_answers} 个</span>` : ""}</td>
+      <td>${esc(h.top_name)} <span class="sim">${pct(h.top_prob)}%</span></td>
+      <td>${h.confirmed_name ? `<span class="cur"></span>${esc(h.confirmed_name)}` : `<span class="ask-sub">未确认</span>`}</td>
+    </tr>`).join("")}</tbody></table>` : `<p class="ask-sub">还没有诊断记录，去诊断页试一次吧。</p>`;
+}
+
+const HV_ICON = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2z" fill="#EE6A1F"/><path d="M13 8l-4 6h3l-1 4 4-6h-3l1-4z" fill="#fff"/></svg>`;
+boot();
+</script>
+</body>
+</html>

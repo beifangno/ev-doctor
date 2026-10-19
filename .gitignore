@@ -1,0 +1,13 @@
+# 含 key 的配置和本地数据，绝对不要提交
+config.json
+config.json.json
+data/evdoctor.db
+data/evdoctor.db-wal
+data/evdoctor.db-shm
+data/backups/
+data/server.log*
+
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
