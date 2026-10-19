@@ -27,17 +27,23 @@ die()  { printf '\033[1;31m!! %s\033[0m\n' "$*" >&2; exit 1; }
 
 # ---------------------------------------------------------------- 1. Python
 say "检查 Python"
-PY=$(command -v python3 || true)
-[ -n "$PY" ] || {
-  if command -v apt-get >/dev/null; then apt-get update -qq && apt-get install -y -qq python3 >/dev/null
-  elif command -v dnf >/dev/null; then dnf install -y -q python3
-  elif command -v yum >/dev/null; then yum install -y -q python3
-  else die "找不到 python3，请先安装"; fi
-  PY=$(command -v python3)
+pick_py() {  # 找一个 >= 3.8 的解释器
+  for c in python3.12 python3.11 python3.10 python3.9 python3.8 python3; do
+    p=$(command -v "$c" 2>/dev/null) || continue
+    "$p" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null && { echo "$p"; return 0; }
+  done
+  return 1
 }
-$PY - <<'EOF' || die "需要 Python 3.8 以上"
-import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)
-EOF
+PY=$(pick_py || true)
+if [ -z "$PY" ]; then
+  say "系统 Python 低于 3.8，安装 python3.11（不影响系统自带的）"
+  if command -v dnf >/dev/null; then dnf install -y -q python3.11 >/dev/null
+  elif command -v apt-get >/dev/null; then apt-get update -qq && apt-get install -y -qq python3 >/dev/null
+  elif command -v yum >/dev/null; then yum install -y -q python3 >/dev/null
+  else die "找不到 python3，请先安装"; fi
+  PY=$(pick_py || true)
+  [ -n "$PY" ] || die "需要 Python 3.8 以上"
+fi
 say "Python: $($PY --version)"
 
 # ---------------------------------------------------------------- 2. 用户、目录、权限
