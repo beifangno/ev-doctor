@@ -51,6 +51,12 @@ say "准备运行用户和目录"
 id -u $RUN_USER >/dev/null 2>&1 || useradd --system --home "$APP_DIR" --shell /usr/sbin/nologin $RUN_USER
 mkdir -p "$APP_DIR/data/backups"
 [ -f "$APP_DIR/config.json" ] || printf '{\n  "api_base": "",\n  "api_key": "",\n  "model": "",\n  "vision_model": ""\n}\n' > "$APP_DIR/config.json"
+# 代码目录：root 拥有、运行用户可读（从 Windows / 压缩包解出来的文件权限经常不对）
+chown -R root:root "$APP_DIR"
+find "$APP_DIR" -type d -exec chmod 755 {} +
+find "$APP_DIR" -type f -exec chmod 644 {} +
+chmod 755 "$APP_DIR/deploy/deploy.sh"
+# 数据目录和配置：运行用户拥有
 chown -R $RUN_USER:$RUN_USER "$APP_DIR/data" "$APP_DIR/config.json"
 chmod 600 "$APP_DIR/config.json"            # 里面可能有 key
 
