@@ -120,7 +120,7 @@ GitHub Actions 会在每次 push 时跑一遍（`.github/workflows/test.yml`）�
 ## 部署到服务器
 
 ```
-git clone https://github.com/<你的用户名>/ev-doctor.git /opt/ev-doctor
+git clone https://github.com/<beifangno>/ev-doctor.git /opt/ev-doctor
 cd /opt/ev-doctor
 sudo DOMAIN=ev.example.com bash deploy/deploy.sh      # 没域名就去掉 DOMAIN=
 ```
